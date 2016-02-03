@@ -1,0 +1,4 @@
+syntax: glob
+_site/**
+.jekyll-metadata
+.sass-cache/**
