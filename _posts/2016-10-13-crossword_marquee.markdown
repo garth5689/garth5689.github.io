@@ -33,4 +33,4 @@ header-img: "img/Pencil_macro_2_kamranki.jpg"
 
 <h2 class="section-heading">Thanks</h2>
 
-
+By <a href="//commons.wikimedia.org/wiki/User:Kamranki" title="User:Kamranki">Kamranki</a> - <span class="int-own-work" lang="en">Own work</span>, <a href="http://creativecommons.org/licenses/by-sa/4.0" title="Creative Commons Attribution-Share Alike 4.0">CC BY-SA 4.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=44110847">Link</a>
