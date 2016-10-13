@@ -4,7 +4,7 @@ title:      "Marquee Mix-Up"
 subtitle:   ""
 date:       2014-06-10 12:00:00
 author:     "Andrew Zwicky"
-header-img: "img/post-bg-01.jpg"
+header-img: "img/Pencil_macro_2_kamranki.jpg"
 ---
 
 <p>Hello everyone!  Today I'm happy to present to you my second constructed crossword.  After requesting ideas from the crowd, countless iterations, and much rework, it's finally complete.  The puzzle is named "Marquee Mix-Up", and is sized as a weekday NYT puzzle (15x15).  After the puzzle, I will write a small amount about the construction, what I like, and what can be improved next time around.  This one is considerably more difficult than my first, and in retrospect includes some pretty particular jargon.  Further down this post I will include revealable hints for what I consider the most difficult words.</p>
