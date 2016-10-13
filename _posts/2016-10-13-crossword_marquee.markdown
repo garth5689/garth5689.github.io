@@ -2,7 +2,7 @@
 layout:     post
 title:      "Marquee Mix-Up"
 subtitle:   ""
-date:       2014-06-10 12:00:00
+date:       2016-10-13 8:00:00
 author:     "Andrew Zwicky"
 header-img: "img/Pencil_macro_2_kamranki.jpg"
 ---
