@@ -10,8 +10,7 @@ header-img: "img/Pencil_macro_2_kamranki.jpg"
 <p>Hello everyone!  Today I'm happy to present to you my second constructed crossword.  After requesting ideas from the crowd, countless iterations, and much rework, it's finally complete.  The puzzle is named "Marquee Mix-Up", and is sized as a weekday NYT puzzle (15x15).  After the puzzle, I will write a small amount about the construction, what I like, and what can be improved next time around.  This one is considerably more difficult than my first, and in retrospect includes some pretty particular jargon.  Further down this post I will include revealable hints for what I consider the most difficult words.</p>
 
 <h2 class="section-heading">Puzzle</h2>
-<p>Without further ado, here is the blank puzzle: <a href="{{ site.url }}/assets/MarqueeMixUp.pdf">PDF</a>
-[PDF]({{ site.url }}/assets/MarqueeMixUp.pdf).</p>
+<p>Without further ado, here is the blank puzzle: <a href="{{ site.url }}/assets/MarqueeMixUp.pdf">PDF</a></p>
 
 <h2 class="section-heading">Hints</h2>
 <p>When constructing this puzzle, I included a few clues for the sake of completing it (or else I ran the risk of never finishing it at all until it was perfect!).  In order to not completely stump everyone, here are some clues to the more obscure entries.  Try to wait until you really need them!</p>
@@ -24,13 +23,11 @@ header-img: "img/Pencil_macro_2_kamranki.jpg"
 <br>GARRISONFORD (12)
 <br>HARRISONKEILLOR (15)
 
-<p>I'm not sure exactly how I thought of this theme, but I did like the number of possible theme entries.  I generated many many possible entries and settled on these because of the well-known actors and the division of the 11/13.  With each 11/13 pair being a swap, it should be easy to grasp the theme once one set of entries is determined.  Other possiblities included:</p>
+<p>I generated many many possible entries and settled on these because of the well-known actors and the division of the 11/13.  With each 11/13 pair being a swap, it should be easy to grasp the theme once one set of entries is determined.  I settled on the final entries with some help from a seasoned constructor Nancy Soloman.  Additionally, the numbers and names worked so that there was an 11/13 split and there were two pairs of swapped names.</p>
 
 <p>In retrospect, the theme is a bit lackluster, and more could be done by expanding rhyming names or swapping more letters within the names in a predictable manner.  That's a task for future puzzles.</p>
 
 <p>As far as the clues go, I am fond of:</p>
-
-<p>I settled on the final entries with some help from a seasoned constructor Nancy Soloman.  Additionally, the numbers and names worked so that there was an 11/13 split and there were two pairs of swapped names.</p>
 
 <h2 class="section-heading">Thanks</h2>
 
