@@ -10,10 +10,11 @@ header-img: "img/Pencil_macro_2_kamranki.jpg"
 <p>Hello everyone!  Today I'm happy to present to you my second constructed crossword.  After requesting ideas from the crowd, countless iterations, and much rework, it's finally complete.  The puzzle is named "Marquee Mix-Up", and is sized as a weekday NYT puzzle (15x15).  After the puzzle, I will write a small amount about the construction, what I like, and what can be improved next time around.  This one is considerably more difficult than my first, and in retrospect includes some pretty particular jargon.  Further down this post I will include revealable hints for what I consider the most difficult words.</p>
 
 <h2 class="section-heading">Puzzle</h2>
-<p>Without further ado, here is the blank puzzle: <a href="{{ site.url }}assets/MarqueeMixUp.pdf">PDF</a></p>
+<p>Without further ado, here is the <a href="{{ site.url }}assets/MarqueeMixUp_Puzzle.pdf">puzzle</a> and the <a href="{{ site.url }}assets/MarqueeMixUp_Solution.pdf">solution</a>.</p>
 
 <h2 class="section-heading">Hints</h2>
 <p>When constructing this puzzle, I included a few clues for the sake of completing it (or else I ran the risk of never finishing it at all until it was perfect!).  In order to not completely stump everyone, here are some clues to the more obscure entries.  Try to wait until you really need them!</p>
+
 
 <h2 class="section-heading">Construction Notes</h2>
 <p>I don't remember exactly how I thought of this theme, but I like it for a few reasons.  One, it has many possible theme entries to choose from, making it easy to find good ones with broad appeal.  For this theme, I generated many possibilities including:</p>
