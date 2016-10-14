@@ -10,7 +10,8 @@ header-img: "img/Pencil_macro_2_kamranki.jpg"
 <p>Hello everyone!  Today I'm happy to present to you my second constructed crossword.  After requesting ideas from the crowd, countless iterations, and much rework, it's finally complete.  The puzzle is named "Marquee Mix-Up", and is sized as a weekday NYT puzzle (15x15).  After the puzzle, I will write a small amount about the construction, what I like, and what can be improved next time around.  This one is considerably more difficult than my first, and in retrospect includes some pretty particular jargon.  Further down this post I will include revealable hints for what I consider the most difficult words.</p>
 
 <h2 class="section-heading">Puzzle</h2>
-<p>Without further ado, here is the blank puzzle: ([PDF]({{ site.url }}/assets/MarqueeMixUp.pdf)).</p>
+<p>Without further ado, here is the blank puzzle: <a href="{{ site.url }}/assets/MarqueeMixUp.pdf">PDF</a>
+[PDF]({{ site.url }}/assets/MarqueeMixUp.pdf).</p>
 
 <h2 class="section-heading">Hints</h2>
 <p>When constructing this puzzle, I included a few clues for the sake of completing it (or else I ran the risk of never finishing it at all until it was perfect!).  In order to not completely stump everyone, here are some clues to the more obscure entries.  Try to wait until you really need them!</p>
