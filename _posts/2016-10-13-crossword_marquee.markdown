@@ -10,7 +10,7 @@ header-img: "img/Pencil_macro_2_kamranki.jpg"
 <p>Hello everyone! Today I'm happy to present to you my second crossword creation.  After requesting ideas from the crowd, countless iterations, and much rework, it's finally complete.</p>
 
 <p>The puzzle is named "Marquee Mix-Up", and is sized as a weekday NYT puzzle (15x15).  After the link to the puzzle, there is a small write-up about the construction, what I like, and what can be improved next time around.  This one is also considerably more difficult than my first (sorry in advance!) so I have included some hints available to help everyone along.</p>
-<!--break-–> 
+<!--break-->
 
 <h2 class="section-heading">Puzzle</h2>
 <p>Without further ado, here is the <a href="{{ site.url }}assets/MarqueeMixUp_Puzzle.pdf">puzzle</a>!</p>
