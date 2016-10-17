@@ -6,7 +6,8 @@ description: "Musings, Puzzles & Programming"
 {% for post in paginator.posts %}
 <div class="post-preview">
     <a href="{{ post.url | prepend: site.baseurl }}">
-        <h2 class="post-title">            {{ post.title }}
+        <h2 class="post-title">
+            {{ post.title }}
         </h2>
         <h3 class="post-excerpt">
             {{ post.excerpt }}
