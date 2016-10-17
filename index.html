@@ -11,7 +11,7 @@ description: "Musings, Puzzles & Programming"
         </h2>
     </a>
         {{ post.excerpt }}
-        <a href="{{ post.url | prepend: site.baseurl }}">Read More</a>
+        <a class=btn href="{{ post.url | prepend: site.baseurl }}">Read More</a>
     <p class="post-meta">Posted by {% if post.author %}{{ post.author }}{% else %}{{ site.title }}{% endif %} on {{ post.date | date: "%B %-d, %Y" }}</p>
 </div>
 <hr>
