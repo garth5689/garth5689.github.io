@@ -244,6 +244,25 @@ hr.small {
   color: #0085a1;
   text-decoration: underline;
 }
+.post-excerpt {
+  display: block;
+  overflow: hidden;
+  position: relative;
+  background: #fff;
+}
+
+.post-excerpt:after {
+  position: absolute;
+  bottom: 0;  
+  height: 100%;
+  width: 100%;
+  content: "";
+  background: linear-gradient(to top,
+     rgba(255,255,255, 1) 5%, 
+     rgba(255,255,255, 0) 50%
+  );
+  pointer-events: none; /* so the text is still selectable */
+}
 @media only screen and (min-width: 768px) {
   .post-preview > a > .post-title {
     font-size: 36px;
