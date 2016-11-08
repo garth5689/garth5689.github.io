@@ -27,4 +27,4 @@ gems: [jekyll-paginate, jekyll-feed]
 
 # configure kramdown
 kramdown:
-  parse_block_html: true
+  parse_block_html: false
