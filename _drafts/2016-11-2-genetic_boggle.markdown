@@ -26,22 +26,35 @@ A reasonable translation for this problem is:  Because I can't possibly search a
 I'll start by giving a quick rundown of the mechanisms of natural selection, and how they can be translated into an algorithm.
 
 ### Population
-#### (and Individuals)
-In order to select (naturally or algorithmically), there must be a population to choose from.  In the natural sense, this is obvious as we think about populations of birds evolving different beaks or the varied colorings of butterflys to evade predators.  For [Darwin's finches](https://en.wikipedia.org/wiki/Darwin%27s_finches), these initial populations may have been very similar when introduced.  For our purposes, we would like the population to consist of individual Boggle boards, each of which can be evaluated.  The size and initial diversity of our population can play a large role in the final solution as well.  In this case, each board will begin randomized to 
 
+In order to select (naturally or algorithmically), there must be a population to choose from.  In the natural sense, this is obvious as we think about populations of birds evolving different beaks or the varied colorings of butterflys to evade predators.  For [Darwin's finches](https://en.wikipedia.org/wiki/Darwin%27s_finches), these initial populations may have been very similar when introduced.  For our purposes, we would like the population to consist of individual Boggle boards, each of which can be evaluated.  The size and initial diversity of our population can play a large role in the final solution as well.  In this case, each board will begin randomized to 
+##### Individuals (Chromosomes)
 Each Boggle board will be represented as a string: `SERSPATGLINESERS` with 16 characters, representing the 16 letters of the board.  For example, an individual board may look like this: ![boggle board]({{ site.baseurl }}/img/boggle_individual.jpg)
-and a population will consist of many of these boards: ![boggle board population]({{ site.baseurl }}/img/boggle_population.jpg)
+and a population will consist of many of these boards: ![boggle board population]({{ site.baseurl }}/img/boggle_population.jpg).  
+
+```
+def generate_random_boggle_letters():
+    return random.choice(string.ascii_lowercase)
+
+toolbox.register("rand_letter",generate_random_boggle_letters)
+toolbox.register("individual",
+                 tools.initRepeat,
+                 creator.Individual,
+                 toolbox.rand_letter,
+                 n=SIZE**2)
+toolbox.register("population",tools.initRepeat,list,toolbox.individual)
+```
 
 
 #### Fitness[^fitness]
 In natural selection, individuals that are most "fit" are more likely to survive and reproduce.  This gives their genes the highest likelihood of being passed on.  In the natural world, this would likely be difficult to measure and depends on many factors.  However, in the algorithmic sense, we can define our own fitness function.  This is how individuals in our population will be evaluated against one another.  I'll define the fitness function to be the total score of the board (given the dictionary at: ...)
 
 ### Selection
-Once the population has been evaluated by the fitness function, the "fittest" must be selected to continue on.  For our puzzle, I'll be using [two-point crossover](https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Two-point_crossover).  This 
+Once the most fit individuals have been determined, some of them must reproduce to produce the next generation.  In my solution, I used [tournament selection](https://en.wikipedia.org/wiki/Tournament_selection).  This solutions pits several individuals against each other, where the probably of the most fit individual being selected from each tournament is one of the inputs to the algorithm.  
 
 
 ### Mating
-Just like in real life, in order to pass down traits to the next generation
+Just like in real life, in order to pass down traits to the next generation, individuals must reproduce.  For our puzzle, I'll be using [two-point crossover](https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Two-point_crossover).  This involves selecting two points ![crossover_picture](https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/TwoPointCrossover.svg/226px-TwoPointCrossover.svg.png)[^crossoverpic]
 
 #### Crossover
 
@@ -64,3 +77,5 @@ Header Image By <a rel="nofollow" class="external free" href="http://wellcomeima
 [^fitness]:[https://en.wikipedia.org/wiki/Natural_selection#Fitness](https://en.wikipedia.org/wiki/Natural_selection#Fitness)
 
 [^beaks]:<a title="By John Gould (14.Sep.1804 - 3.Feb.1881) [Public domain], via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File%3ADarwin's_finches.jpeg"></a>
+
+[^crossoverpic]:By <a href="//commons.wikimedia.org/w/index.php?title=User:R0oland&amp;action=edit&amp;redlink=1" class="new" title="User:R0oland (page does not exist)">R0oland</a> - <span class="int-own-work" lang="en">Own work</span>, <a href="http://creativecommons.org/licenses/by-sa/3.0" title="Creative Commons Attribution-Share Alike 3.0">CC BY-SA 3.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=29950354">Link</a>
