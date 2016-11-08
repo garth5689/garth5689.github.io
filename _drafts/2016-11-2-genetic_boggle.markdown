@@ -19,7 +19,9 @@ Per wikipedia:[^wikiga]
 <blockquote>A genetic algorithm is a metaheuristic inspired by the process of natural selection that belongs to the larger class of evolutionary algorithms (EA). Genetic algorithms are commonly used to generate high-quality solutions to optimization and search problems by relying on bio-inspired operators such as mutation, crossover and selection.</blockquote>
 <!--break-->
 
-Right...
+Right... 
+
+A reasonable translation for this problem is:  Because I can't possibly search all possible combinations of boards, let's follow nature's example and simulate natural selection to find solutions.  Genetic algorithms can't guarantee the absolute best solution, but if properly configured, can give very good solutions.
 
 I'll start by giving a quick rundown of the mechanisms of natural selection, and how they can be translated into an algorithm.
 
@@ -27,8 +29,8 @@ I'll start by giving a quick rundown of the mechanisms of natural selection, and
 #### (and Individuals)
 In order to select (naturally or algorithmically), there must be a population to choose from.  In the natural sense, this is obvious as we think about populations of birds evolving different beaks or the varied colorings of butterflys to evade predators.  For [Darwin's finches](https://en.wikipedia.org/wiki/Darwin%27s_finches), these initial populations may have been very similar when introduced.  For our purposes, we would like the population to consist of individual Boggle boards, each of which can be evaluated.  The size and initial diversity of our population can play a large role in the final solution as well.  In this case, each board will begin randomized to 
 
-Each Boggle board will be represented as a string: `SERSPATGLINESERS` with 16 characters, representing the 16 letters of the board.  For example, an individual board may look like this: 
-and a population will consist of many of these boards:
+Each Boggle board will be represented as a string: `SERSPATGLINESERS` with 16 characters, representing the 16 letters of the board.  For example, an individual board may look like this: ![boggle board]({{ site.baseurl }}/img/boggle_individual.jpg)
+and a population will consist of many of these boards: ![boggle board population]({{ site.baseurl }}/img/boggle_population.jpg)
 
 
 #### Fitness[^fitness]
@@ -49,7 +51,9 @@ Just like in real life, in order to pass down traits to the next generation
 
 ![beaks]({{ site.baseurl }}/img/Darwin's_finches.jpeg)[^beaks]
 
-#### References
+## Solution
+
+## References
 
 Header Image By <a rel="nofollow" class="external free" href="http://wellcomeimages.org/indexplus/obf_images/6c/d2/f0a4468f0181ae48d0e410beeb51.jpg">http://wellcomeimages.org/indexplus/obf_images/6c/d2/f0a4468f0181ae48d0e410beeb51.jpg</a> Gallery: <a rel="nofollow" class="external free" href="http://wellcomeimages.org/indexplus/image/L0020440.html">http://wellcomeimages.org/indexplus/image/L0020440.html</a>, <a href="http://creativecommons.org/licenses/by/4.0" title="Creative Commons Attribution 4.0">CC BY 4.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=35994175">Link</a>
 
@@ -58,6 +62,5 @@ Header Image By <a rel="nofollow" class="external free" href="http://wellcomeima
 [^wikiga]:[https://en.wikipedia.org/wiki/Genetic_algorithm](https://en.wikipedia.org/wiki/Genetic_algorithm)
 
 [^fitness]:[https://en.wikipedia.org/wiki/Natural_selection#Fitness](https://en.wikipedia.org/wiki/Natural_selection#Fitness)
-
 
 [^beaks]:<a title="By John Gould (14.Sep.1804 - 3.Feb.1881) [Public domain], via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File%3ADarwin's_finches.jpeg"></a>
