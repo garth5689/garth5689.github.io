@@ -24,3 +24,7 @@ exclude: ["less","node_modules","Gruntfile.js","package.json","README.md"]
 excerpt_separator: <!--break-->
 
 gems: [jekyll-paginate, jekyll-feed]
+
+# configure kramdown
+kramdown:
+  parse_block_html: true

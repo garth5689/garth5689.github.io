@@ -4,6 +4,7 @@ title:      "Marquee Mix-Up"
 date:       2016-10-13 8:00:00
 author:     "Andrew"
 header-img: "img/Pencil_macro_2_kamranki.jpg"
+tags:       "puzzles,crosswords,personal"
 ---
 
 <p>Hello everyone! Today I'm happy to present my second crossword creation.  After fielding ideas from the crowd and countless iterations, it's finally complete.</p>
@@ -76,7 +77,7 @@ GARRISONFORD (12)<br>
 HARRISONKEILLOR (15)<br>
 
 <p>I settled on the entries I used for a few reasons:
-<ul> 
+<ul>
 <li>The actors are fairly well-known, which makes the puzzle accessible for more solvers.</li>
 <li>There are two pairs of names.  This allows the solver to reason some information about the other clues, rather than 4 unconnected names.</li>
 <li>The combination of 10/11 is more flexbile when laying out the grid, because a 15 letter clue takes up the entire grid.</li>
