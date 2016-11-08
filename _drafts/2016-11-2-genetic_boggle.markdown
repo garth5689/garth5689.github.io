@@ -21,19 +21,25 @@ Per wikipedia:[^wikiga]
 
 Right...
 
-I'll start by giving a quick background into the actual mechanisms of natural selection and how they relate to the algorithmic kind of selection.
+I'll start by giving a quick rundown of the mechanisms of natural selection, and how they can be translated into an algorithm.
 
 ### Population
-Both in the natural and computer version, for the fittest to survive, there must be a population to choose from.  In the classic example of Darwin's finches, an initial population of very similar finches was present on the galapagos.  In my more modern puzzle, the population will consist of a group of boggle boards, each of which can be scored individually.
+#### (and Individuals)
+In order to select (naturally or algorithmically), there must be a population to choose from.  In the natural sense, this is obvious as we think about populations of birds evolving different beaks or the varied colorings of butterflys to evade predators.  For [Darwin's finches](https://en.wikipedia.org/wiki/Darwin%27s_finches), these initial populations may have been very similar when introduced.  For our purposes, we would like the population to consist of individual Boggle boards, each of which can be evaluated.  The size and initial diversity of our population can play a large role in the final solution as well.
 
-### Selection
-
+Each Boggle board will be represented as a string:
+`DEFTGFSSEGFESGHJ`
+with 16 characters, representing the 16 letters of the board.
 
 #### Fitness[^fitness]
 In natural selection, individuals that are most "fit" are more likely to survive and reproduce.  This gives their genes the highest likelihood of being passed on.  In the natural world, this would likely be difficult to measure and depends on many factors.  However, in the algorithmic sense, we can define our own fitness function.  This is how individuals in our population will be evaluated against one another.  I'll define the fitness function to be the total score of the board (given the dictionary at: ...)
 
+### Selection
+Once the population has been evaluated by the fitness function, the "fittest" must be selected to continue on.  For our puzzle, I'll be using [two-point crossover](https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Two-point_crossover).  This 
+
+
 ### Mating
-Just like in real life, in order to pass down
+Just like in real life, in order to pass down traits to the next generation
 
 #### Crossover
 
