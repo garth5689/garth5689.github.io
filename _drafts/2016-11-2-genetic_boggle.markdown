@@ -14,10 +14,11 @@ Each week, [FiveThirtyEight](http://fivethirtyeight.com) posts a Riddler puzzle 
 
 There are myriad ways that this type of problem can be tackled, and some of the successful solutions can be seen in the [following week's Ridder](http://fivethirtyeight.com/features/rig-the-election-with-math/).  Personally, I decided to try using a genetic algorithm.  It's something I have heard about quite a bit, but had yet to find a suitable puzzle.
 
+<!--break-->
 ## Genetic Algorithm Background
 Per wikipedia:[^wikiga]
 <blockquote>A genetic algorithm is a metaheuristic inspired by the process of natural selection that belongs to the larger class of evolutionary algorithms (EA). Genetic algorithms are commonly used to generate high-quality solutions to optimization and search problems by relying on bio-inspired operators such as mutation, crossover and selection.</blockquote>
-<!--break-->
+
 
 Right... 
 
