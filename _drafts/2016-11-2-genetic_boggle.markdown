@@ -9,7 +9,7 @@ tags:       "puzzles,programming"
 
 I recently had a bit of fun working on a puzzle, and learned some interesting things along the way about generic algorithms as well, so I thought I'd share.
 
-Each week, [FiveThirtyEight](http://fivethirtyeight.com) posts a Riddler puzzle for intrepid puzzlers to solve.  On Oct, 14th, this was the [Riddler:](http://fivethirtyeight.com/features/this-challenge-will-boggle-your-mind/)  
+Each week, [FiveThirtyEight](http://fivethirtyeight.com) posts a Riddler puzzle for intrepid puzzlers to solve.  On Oct. 14th, this was the [Riddler:](http://fivethirtyeight.com/features/this-challenge-will-boggle-your-mind/)  
 <blockquote>What arrangement of any letters on a Boggle board has the most points attainable?  Boggle is played with a 4-by-4 grid of letters. Points are scored by finding strings of letters — connected in any direction, horizontally, vertically or diagonally — that form valid words at least three letters long. Words 3, 4, 5, 6, 7 or 8 or more letters long score 1, 1, 2, 3, 5 and 11 points, respectively.</blockquote>
 
 There are myriad ways that this type of problem can be tackled, and some of the successful solutions can be seen in the [following week's Ridder](http://fivethirtyeight.com/features/rig-the-election-with-math/).  Personally, I decided to try using a genetic algorithm.  It's something I have heard about quite a bit, but had yet to find a suitable puzzle.
@@ -22,9 +22,7 @@ Per wikipedia:[^wikiga]
 
 Right... 
 
-A reasonable translation for this problem is:  Because I can't possibly search all possible combinations of boards, let's follow nature's example and simulate natural selection to find solutions.  Genetic algorithms can't guarantee the absolute best solution, but if properly configured, can give very good solutions.
-
-I'll start by giving a quick rundown of the mechanisms of natural selection, and how they can be translated into an algorithm.
+A translation for this puzzle is:  Because I can't possibly search all possible combinations of boards, let's follow nature's example.  We can simulate natural selection on a population of randomly generated boggle boards and see how they score.  The high scoring ones will "reproduce" to created new generations.  The hope is that over enough generations, the low scoring boards will be reduced in the gene pool, and only the highest scoring ones will survive.
 
 ### Population
 
