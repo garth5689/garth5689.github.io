@@ -53,11 +53,16 @@ Once the most fit individuals have been determined, some of them must reproduce 
 
 
 ### Mating
-Just like in real life, in order to pass down traits to the next generation, individuals must reproduce.  For our puzzle, I'll be using [two-point crossover](https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Two-point_crossover).  This involves selecting two points ![crossover_picture](https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/TwoPointCrossover.svg/226px-TwoPointCrossover.svg.png)[^crossoverpic]
+Just like in real life, in order to pass down traits to the next generation, individuals must reproduce.  For our puzzle, I'll be using [two-point crossover](https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Two-point_crossover).  This involves selecting two points on the "gene sequnce" and then switching the middle sections between the selected individuals.  In the puzzle, it may look something like this:
+`SERSPATGLINESERS`
+`ERTSRGUJOSACELPS`
 
-#### Crossover
+`SERSRGUJOSAESERS`
+`ERTSPATGLINCELPS`
+![crossover_picture](https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/TwoPointCrossover.svg/226px-TwoPointCrossover.svg.png)[^crossoverpic]
 
 #### Mutation
+Random mutations are responsible for 
 
 ![finches]({{ site.baseurl }}/img/Finchadaptiveradiation.png)[^birdimg]
 
