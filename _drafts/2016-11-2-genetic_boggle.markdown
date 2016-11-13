@@ -32,24 +32,28 @@ I'll translate.  For problems where it is difficult to test every permutation, e
 Performing this process creates many successive generations of the population.  By continuously pruning the poor solutions and introducing random mutations, the population will become more "fit" overall.
 
 Because I can't possibly search all possible combinations of boards, a genetic algorithm may be appropriate.  I can a population of random boggle boards and see how they score.  The highest scoring ones will be mixed and mutated, hopefully uncovering even higher scoring boards.  The goal is that over enough generations, the low scoring boards will be reduced in the gene pool, and only the highest scoring ones will survive.
+### Code
+I will be including code snippets throughout this post, and the full code can be found here:.  I used Python 3.5, and the [deap toolbox](https://github.com/DEAP/deap) for the genetic algorithm part.
 
 ### Population
 
-The population is the group of individuals that's evolving.  In nature, this could be a species of birds on an isolated island,
+The population is the group of individuals that's evolving.  In nature, this could be the first flock of birds on an island, a species of trees, a group of mice in a country, etc.  Over time, individuals in the population die and new ones are born to replace them.
 
-Natural selection can only work when there is a population of individuals to evolve.  For example, when a similar group of birds migrate over many generations to a new climate, this is the base population.  Genetic variation may already exist among this population, and I simulate that by introducing some randomization into my initial population.
-
-For solving this puzzle, the population will consist of individual Boggle boards, each of which can be scored.  The size and initial diversity of our population can play a large role in the final solution as well.  In this case, each board will start as a completely random string of 16 letters:  
+For solving this puzzle, the population will consist of a group of individual Boggle boards, each of which can be scored.  Each board will be represented as a string of 16 letters.
 `SERSPATGLINESERS`  
-The board has been 'flattened' for easier processing.  For example, an individual board may look like this:
+The board has been flattened for easier processing.  For example, an individual board may look like this:
 ![boggle board]({{ site.baseurl }}/img/boggle_individual.jpg)
 and the population may look something like this:
 ![boggle board population]({{ site.baseurl }}/img/boggle_population.jpg)
 
+In code, I need a function to generate random letters:
 {% highlight python %}
 def generate_random_boggle_letters():
     return random.choice(string.ascii_lowercase)
+{% endhighlight %}
 
+And that can be used 
+{% highlight python %}
 toolbox.register("rand_letter",generate_random_boggle_letters)
 toolbox.register("individual",
                  tools.initRepeat,
