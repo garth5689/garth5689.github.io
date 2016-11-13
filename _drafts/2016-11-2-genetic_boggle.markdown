@@ -12,26 +12,41 @@ I recently had a bit of fun working on a puzzle, and learned some interesting th
 Each week, [FiveThirtyEight](http://fivethirtyeight.com) posts a Riddler puzzle for intrepid puzzlers to solve.  On Oct. 14th, this was the [Riddler:](http://fivethirtyeight.com/features/this-challenge-will-boggle-your-mind/)  
 <blockquote>What arrangement of any letters on a Boggle board has the most points attainable?  Boggle is played with a 4-by-4 grid of letters. Points are scored by finding strings of letters — connected in any direction, horizontally, vertically or diagonally — that form valid words at least three letters long. Words 3, 4, 5, 6, 7 or 8 or more letters long score 1, 1, 2, 3, 5 and 11 points, respectively.</blockquote>
 
-There are myriad ways that this type of problem can be tackled, and some of the successful solutions can be seen in the [following week's Ridder](http://fivethirtyeight.com/features/rig-the-election-with-math/).  Personally, I decided to try using a genetic algorithm.  It's something I have heard about quite a bit, but had yet to find a suitable puzzle.
+There are many ways to tackle this problem, and some of the successful solutions can be seen in the [following week's Ridder](http://fivethirtyeight.com/features/rig-the-election-with-math/).  I decided that it would be interesting to use a genetic algorithm.  It's something I have heard about quite a bit, but had yet to find a suitable application for.
 
 <!--break-->
+
 ## Genetic Algorithm Background
 Per wikipedia:[^wikiga]
 <blockquote>A genetic algorithm is a metaheuristic inspired by the process of natural selection that belongs to the larger class of evolutionary algorithms (EA). Genetic algorithms are commonly used to generate high-quality solutions to optimization and search problems by relying on bio-inspired operators such as mutation, crossover and selection.</blockquote>
 
+I'll translate.  For problems where it is difficult to test every permutation, emulating natural selection can help find a good enough solution.  The basic process is:
 
-Right... 
+1. Generate many possible individuals (Population)
+2. Score them (Fitness)
+3. Select the most "fit" individuals (Selection)
+4. Intermixing those (Mating)
+5. Introduce random mutations (Mutation)
+6. Repeat 2-4.
 
-A translation for this puzzle is:  Because I can't possibly search all possible combinations of boards, let's follow nature's example.  We can simulate natural selection on a population of randomly generated boggle boards and see how they score.  The high scoring ones will "reproduce" to created new generations.  The hope is that over enough generations, the low scoring boards will be reduced in the gene pool, and only the highest scoring ones will survive.
+Performing this process creates many successive generations of the population.  By continuously pruning the poor solutions and introducing random mutations, the population will become more "fit" overall.
+
+Because I can't possibly search all possible combinations of boards, a genetic algorithm may be appropriate.  I can a population of random boggle boards and see how they score.  The highest scoring ones will be mixed and mutated, hopefully uncovering even higher scoring boards.  The goal is that over enough generations, the low scoring boards will be reduced in the gene pool, and only the highest scoring ones will survive.
 
 ### Population
 
-In order to select (naturally or algorithmically), there must be a population to choose from.  In the natural sense, this is obvious as we think about populations of birds evolving different beaks or the varied colorings of butterflys to evade predators.  For [Darwin's finches](https://en.wikipedia.org/wiki/Darwin%27s_finches), these initial populations may have been very similar when introduced.  For our purposes, we would like the population to consist of individual Boggle boards, each of which can be evaluated.  The size and initial diversity of our population can play a large role in the final solution as well.  In this case, each board will begin randomized to 
-##### Individuals (Chromosomes)
-Each Boggle board will be represented as a string: `SERSPATGLINESERS` with 16 characters, representing the 16 letters of the board.  For example, an individual board may look like this: ![boggle board]({{ site.baseurl }}/img/boggle_individual.jpg)
-and a population will consist of many of these boards: ![boggle board population]({{ site.baseurl }}/img/boggle_population.jpg).  
+The population is the group of individuals that's evolving.  In nature, this could be a species of birds on an isolated island,
 
-```
+Natural selection can only work when there is a population of individuals to evolve.  For example, when a similar group of birds migrate over many generations to a new climate, this is the base population.  Genetic variation may already exist among this population, and I simulate that by introducing some randomization into my initial population.
+
+For solving this puzzle, the population will consist of individual Boggle boards, each of which can be scored.  The size and initial diversity of our population can play a large role in the final solution as well.  In this case, each board will start as a completely random string of 16 letters:  
+`SERSPATGLINESERS`  
+The board has been 'flattened' for easier processing.  For example, an individual board may look like this:
+![boggle board]({{ site.baseurl }}/img/boggle_individual.jpg)
+and the population may look something like this:
+![boggle board population]({{ site.baseurl }}/img/boggle_population.jpg)
+
+{% highlight python %}
 def generate_random_boggle_letters():
     return random.choice(string.ascii_lowercase)
 
@@ -42,7 +57,7 @@ toolbox.register("individual",
                  toolbox.rand_letter,
                  n=SIZE**2)
 toolbox.register("population",tools.initRepeat,list,toolbox.individual)
-```
+{% endhighlight %}
 
 
 #### Fitness[^fitness]
@@ -53,16 +68,16 @@ Once the most fit individuals have been determined, some of them must reproduce 
 
 
 ### Mating
-Just like in real life, in order to pass down traits to the next generation, individuals must reproduce.  For our puzzle, I'll be using [two-point crossover](https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Two-point_crossover).  This involves selecting two points on the "gene sequnce" and then switching the middle sections between the selected individuals.  In the puzzle, it may look something like this:
-`SERSPATGLINESERS`
-`ERTSRGUJOSACELPS`
+Just like in real life, in order to pass down traits to the next generation, individuals must reproduce.  For our puzzle, I'll be using [two-point crossover](https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Two-point_crossover).  This involves selecting two points on the "gene sequence" and then switching the middle sections between the selected individuals.  In the puzzle, it may look something like this:
+`SERS``PATGLIN``ESERS`  
+`ERTS``RGUJOSA``CELPS`  
 
-`SERSRGUJOSAESERS`
-`ERTSPATGLINCELPS`
+`SERS``RGUJOSA``ESERS`  
+`ERTS``PATGLIN``CELPS`  
 ![crossover_picture](https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/TwoPointCrossover.svg/226px-TwoPointCrossover.svg.png)[^crossoverpic]
 
 #### Mutation
-Random mutations are responsible for 
+Random mutations of the genome are the mechanism for natural selection to
 
 ![finches]({{ site.baseurl }}/img/Finchadaptiveradiation.png)[^birdimg]
 
