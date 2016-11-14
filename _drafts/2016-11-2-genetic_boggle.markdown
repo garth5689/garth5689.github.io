@@ -7,60 +7,53 @@ header-img: "img/The_family_of_Laocoon_entwined_in_coils_of_DNA.jpg"
 tags:       "puzzles programming"
 ---
 
-I recently had a bit of fun working on a puzzle, and learned some interesting things along the way about generic algorithms as well, so I thought I'd share.
+Recently, I had a bit of fun solving an interesting riddle, so I decided to share it.  I enlisted the help of my computer, specifically using a techinque that I haven't had much exposure to previously, genetic algorithms.  I've read about them previously, but never found a suitable application.  Prior knowledge of programming or genetics isn't required.  There is code included in the post, but it's not required to appreciate the content.
 
-Each week, [FiveThirtyEight](http://fivethirtyeight.com) posts a Riddler puzzle for intrepid puzzlers to solve.  On Oct. 14th, this was the [Riddler:](http://fivethirtyeight.com/features/this-challenge-will-boggle-your-mind/)  
+Each week, [FiveThirtyEight](http://fivethirtyeight.com) posts a puzzle call the Riddler.  Here is the [Oct. 14th Riddler](http://fivethirtyeight.com/features/this-challenge-will-boggle-your-mind/)  
 <blockquote>What arrangement of any letters on a Boggle board has the most points attainable?  Boggle is played with a 4-by-4 grid of letters. Points are scored by finding strings of letters — connected in any direction, horizontally, vertically or diagonally — that form valid words at least three letters long. Words 3, 4, 5, 6, 7 or 8 or more letters long score 1, 1, 2, 3, 5 and 11 points, respectively.</blockquote>
-
-There are many ways to tackle this problem, and some of the successful solutions can be seen in the [following week's Ridder](http://fivethirtyeight.com/features/rig-the-election-with-math/).  I decided that it would be interesting to use a genetic algorithm.  It's something I have heard about quite a bit, but had yet to find a suitable application for.
 
 <!--break-->
 
 #### Code
-I will be including code snippets throughout this post, and the full code can be found here:.  I used Python 3.5, and the [deap toolbox](https://github.com/DEAP/deap) for the genetic algorithm part.
+I will be including code snippets throughout this post, and the full code can be found here:.  Python 3.5 and the [deap toolbox](https://github.com/DEAP/deap) were the primarly tools used.
 
 ## Genetic Algorithm Background
 Per wikipedia:[^wikiga]
 <blockquote>A genetic algorithm is a metaheuristic inspired by the process of natural selection that belongs to the larger class of evolutionary algorithms (EA). Genetic algorithms are commonly used to generate high-quality solutions to optimization and search problems by relying on bio-inspired operators such as mutation, crossover and selection.</blockquote>
 
-I'll translate.  For problems where it is difficult to test every permutation, emulating natural selection can help find a good enough solution.  The basic process is:
+And now, in English...  For problems where it is difficult to test every permutation, emulating natural selection can help find a good enough solution.  The basic process is:
 
-1. Generate many possible individuals (Population)
+1. Start with some possible solutions (Population)
 2. Score them (Fitness)
-3. Select the most "fit" individuals (Selection)
+3. Select the most fit individuals (Selection)
 4. Intermixing those (Mating)
 5. Introduce random mutations (Mutation)
-6. Repeat 2-4.
+6. Repeat 2-5 for many generations.
 
-Performing this process creates many successive generations of the population.  By continuously pruning the poor solutions and introducing random mutations, the population will become more "fit" overall.
-
-Because I can't possibly search all possible combinations of boards, a genetic algorithm may be appropriate.  I can a population of random boggle boards and see how they score.  The highest scoring ones will be mixed and mutated, hopefully uncovering even higher scoring boards.  The goal is that over enough generations, the low scoring boards will be reduced in the gene pool, and only the highest scoring ones will survive.
+Because we can't possibly search all possible combinations of Boggle boards, a genetic algorithm may be appropriate.  We can a population of random boggle boards and see how they score.  Some of the highest scoring ones will be mixed and mutated, hopefully uncovering even higher scoring boards.  The goal is that over enough generations, the low scoring boards will be reduced in the gene pool, and only the highest scoring ones will survive.
 
 ### Population
 
-A population is generally a group of organisms of the same species, in a particular area, that have a chance to breed.  For example, this could be a species of birds in the Caribbean islands, or a species of tree in the pacific northwest.  In order for natural selection to apply, the individuals in the population must be capable of reproducing amongst themselves.
+A population is a group of organisms of the same species, in a particular area, that have a chance to breed.  For example, this could be a species of birds in the Caribbean islands, or a species of tree in the pacific northwest.  In order for natural selection to apply, the individuals in the population must be capable of reproducing amongst themselves.  Populations can have a small amount of genetic diversity present initially as well.
 
-The population for this puzzle might not be as intuitive as a flock of birds.  It will consist of individual Boggle boards, each of which can be scored.  An individual board looks like this:
+When thinking about the population for our problem, it's not as intuitive as a flock of birds or forest of trees.  Additionally, we have control over the number of individuals and the initial population. Our population will consist of individual Boggle boards, each of which can be scored.
+
+An individual board looks like this:
 ![boggle board]({{ site.baseurl }}/img/boggle_individual.jpg)
 and the population may look something like this:
 ![boggle board population]({{ site.baseurl }}/img/boggle_population.jpg)
 
+Because we don't know what kind of solution we might get, it makes sense to create the initial population randomly.  If there is some prior knowledge about good solutions, those can be used as seed values as well.  Once the population is created, we need to determine which solutions should continue on.
+
 ### Fitness[^fitness]
-In the natural world, each individual does not have an equal chance to pass their genes onto the next generation.  Fitness is a way to quantify the probability that an individual will contribute to the genes of subsequent generations.  Individuals that have the best chance of reproducing are the most "fit" (hence, "survival of the fittest").  The most fit individuals are not necessarily the strongest, fastest or biggest.  A particular gene that controls coloring could have a sizable impact on reproduction if it provides great camouflage.
+In the natural world, each individual does not have an equal chance to pass their genes onto the next generation.  Fitness is the term to describe the probability that an individual will contribute to the genes of subsequent generations.  Individuals that have the best chance of reproducing are the most "fit" (hence, "survival of the fittest").  The most fit individuals are not necessarily the strongest, fastest or biggest.  For exampl, a particular gene that controls coloring could have a sizable impact on reproduction if it provides great camouflage.
 
-In the natural world, fitness can be tough to measure for an individual.  The great thing is that Boggle boards canm be scored to have a definitive best one.  My fitness function will be the total score of all words that can be found in a board.  After all, this is the goal of the puzzle, so this should be maximized.
+In the natural world, fitness is not as obvious as a single number.  One great thing about our problem is that Boggle boards can be scored easily, which gives each board a very clear fitness value.  Our fitness function will be the total score of all possible words in the board.  After all, this is the goal of the puzzle, so it makes sense to try to maximize this value.
 
-The actual function to perform the maximum is probably worthy of a post in itself.  However, to not distract from the interesting genetic stuff, you can check it out here:
+The actual function to perform the scoring is probably worthy of a post in itself, however I think it would be too big of an aside.  It can be found in the code.
 
 ### Selection
-Once the population has been evaluated for fitness, some of the individuals will reproduce to create the next generation.  Because we have control algorithmically, this can be done in any number of ways.  We could select via any of these methods:  
-
-* highest scoring individuals
-* randomly
-* tournament selection[^tourn_select] [^deap_tourn]
-* roulette selection
-
-Because I'm not experienced with these type of algorithms, I picked tournament selection to use.  This
+Once the population has been evaluated for fitness, some of the individuals will reproduce to create the next generation.  In nature, the individuals that would breed would be based on their fitness, mainly the ones that survive and attract a mate.  In our case, we have complete control over this selection process.  For this problem, we'll be using tournament selection[^tourn_select][^deap_tourn].  In tournament selection, several individuals are pulled randomly from the population, where they participate in a "tournament.  One individual is picked froim the group based on their relative fitness values.  Individuals with higher fitness are more likely to be picked, but it's possible that any individual can make it out.
 
 ### Mating
 In order to pass on the genes that lead to their success, individuals must mate.  In nature, this takes on many different forms, but ultimately results in a new chromosome which is a combination of the parents' chromosomes.  For our algorithm, this is done via two point crossover[^two_pc].  Two point crossover basically selects two points along the chromosome and then swaps the intermediate sections to create two new chromosomes.
@@ -95,7 +88,7 @@ Random mutations are the second mechanism for introducing changes into the popul
 </p>
 {::options parse_block_html="false" /}
 
-Algorithmically, there are many ways to approach this, but the mutation must be explicitly defined.  I've chosen to mutate the grid by swapping letters for another random letter with a supplied probability.  This functionally means that each letter has a small change to change to a completely random new letter.  The aggressiveness of the mutations depend on the supplied probability.  If a small probability is used, large changes in the offspring are unlikely.
+Algorithmically, there are many ways to approach this, but the mutation must be explicitly defined.  I've chosen to mutate the grid by swapping letters for another random letter with a supplied probability.  This functionally means that each letter has a small change to change to a completely random new letter.  The aggressiveness of the mutations depend on the supplied probability.  If a small probability is used, large changes in the offspring are unlikely.  There are likely other mutations that would work as well, including swapping letters, or just shifting letters.  
 
 ## Solution
 
@@ -133,6 +126,8 @@ toolbox.register("individual",
                  n=SIZE**2)
 toolbox.register("population",tools.initRepeat,list,toolbox.individual)
 {% endhighlight %}
+
+Many more successful solutions can be seen in the [Oct. 21st Ridder](http://fivethirtyeight.com/features/rig-the-election-with-math/).
 
 ## References
 
