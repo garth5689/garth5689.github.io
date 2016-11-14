@@ -34,9 +34,10 @@ Because we can't possibly search all possible combinations of Boggle boards, a g
 
 ### Population
 
-A population is a group of organisms of the same species, in a particular area, that have a chance to breed.  For example, this could be a species of birds in the Caribbean islands, or a species of tree in the pacific northwest.  In order for natural selection to apply, the individuals in the population must be capable of reproducing amongst themselves.  Populations can have a small amount of genetic diversity present initially as well.
+A **population** is a group of organisms of the same species, in a particular area, that have a chance to breed.  For example, this could be a species of birds in the Caribbean islands, or a species of tree in the pacific northwest.  In order for natural selection to apply, the individuals in the population must be capable of reproducing amongst themselves.  Populations can have a small amount of genetic diversity present initially as well.  The physical traits of each individual is controlled by their **genome**, which is broken down into **genes**.  Some of these genetic traits are obvious, such as eye/hair color, and others are not obvious such as blood type.  All contribute to the individual's survival rate. 
 
-When thinking about the population for our problem, it's not as intuitive as a flock of birds or forest of trees.  Additionally, we have control over the number of individuals and the initial population. Our population will consist of individual Boggle boards, each of which can be scored.
+When thinking about the population for our problem, it's not as intuitive as a flock of birds or forest of trees.  Additionally, we have control over the number of individuals and the initial population. Our population will consist of individual Boggle boards, each of which can be scored. Each board will be represented as a flattened string of 16 letters for easier processing (e.g. `SERSPATGLINESERS`).  This string can be roughly translated to our Boggle board's genome, and each individual letter can be thought of as a gene.
+
 
 An individual board looks like this:
 ![boggle board]({{ site.baseurl }}/img/boggle_individual.jpg)
@@ -44,6 +45,7 @@ and the population may look something like this:
 ![boggle board population]({{ site.baseurl }}/img/boggle_population.jpg)
 
 Because we don't know what kind of solution we might get, it makes sense to create the initial population randomly.  If there is some prior knowledge about good solutions, those can be used as seed values as well.  Once the population is created, we need to determine which solutions should continue on.
+
 
 {% highlight python %}
 import random
@@ -156,7 +158,7 @@ toolbox.register("mutate", mutate_grid, indpb = 0.15)
 
 ## Solution
 
-Now is the time to apply these principles to actual code.  There are some approximations that I've made for simplicity.  Each board will be represented as a flattened string of 16 letters for easier processing (e.g. `SERSPATGLINESERS`)
+
 
 Below is the code to set up the algorithm and create the initial population.  
 
