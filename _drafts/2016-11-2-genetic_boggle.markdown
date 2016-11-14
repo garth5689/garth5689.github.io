@@ -79,7 +79,7 @@ In our algorithm, this may look like this:
 <div style="color:blue;background-color:powderblue;display: inline-block;">ESERS</div></p>
 
 #### Mutation
-Random mutations are the second mechanism for introducing changes into the population.  After the offspring has been produced, small mutations are introduced into the population.  Naturally this occurs through errors in DNA reproduction and damage to the DNA sequence.  One natural example of this is Darwin's finches.  Darwin observed that many seemingly similar birds had different beaks that allowed them an advantage for eating a particular food source.  These beak differences may have emerged through random mutations that allowed birds access to those food sources, thus a better chance to survive and reproduce.
+Random mutations are the second mechanism for introducing changes into the population.  After the offspring has been produced, small mutations are introduced into the population.  Naturally this occurs through errors in DNA reproduction and damage to the DNA sequence.  One natural example of this is Charles Darwin's finches.  In the Galapagos Islands, Darwin discovered that many seemingly similar finches were actually different species.  These different species had actually developed many different beak shapes that allowed them access to new food sources.  Some beaks are sharp and pointed to catch insects, while others are broad to eat seeds from cacti.  As these beaks developed, it gave each new species access to the new food source, and a better chance of survival.  It's likely that there were unsuccessful beak mutations as well that were not favorable to reproduction.
 
 {::options parse_block_html="true" /}
 <p align="center">
@@ -88,7 +88,7 @@ Random mutations are the second mechanism for introducing changes into the popul
 </p>
 {::options parse_block_html="false" /}
 
-Algorithmically, there are many ways to approach this, but the mutation must be explicitly defined.  I've chosen to mutate the grid by swapping letters for another random letter with a supplied probability.  This functionally means that each letter has a small change to change to a completely random new letter.  The aggressiveness of the mutations depend on the supplied probability.  If a small probability is used, large changes in the offspring are unlikely.  There are likely other mutations that would work as well, including swapping letters, or just shifting letters.  
+Algorithmically, there are many ways to approach this, but the mutation must be explicitly defined.  I've chosen to give each letter a small probability to mutate into another random letter.  The aggressiveness of the mutation depend on the supplied probability.  If a small probability is used, it's likely that only a few, if any letters will change.  There are likely other mutations that would work as well, including swapping letters, or just shifting letters.  Because there is no meaningful link between letters, I chose to mutate the letter randomly.
 
 ## Solution
 
