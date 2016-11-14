@@ -9,7 +9,7 @@ tags:       "puzzles programming"
 
 Recently, I had a bit of fun solving an interesting riddle, so I decided to share it.  I enlisted the help of my computer, specifically using a techinque that I haven't had much exposure to previously, genetic algorithms.  I've read about them previously, but never found a suitable application.  Prior knowledge of programming or genetics isn't required.  There is code included in the post, but it's not required to appreciate the content.
 
-Each week, [FiveThirtyEight](http://fivethirtyeight.com) posts a puzzle call the Riddler.  Here is the [Oct. 14th Riddler](http://fivethirtyeight.com/features/this-challenge-will-boggle-your-mind/)  
+Each week, [FiveThirtyEight](http://fivethirtyeight.com) posts a puzzle call the Riddler.  Here is the [Oct. 21st Riddler](http://fivethirtyeight.com/features/this-challenge-will-boggle-your-mind/)  
 <blockquote>What arrangement of any letters on a Boggle board has the most points attainable?  Boggle is played with a 4-by-4 grid of letters. Points are scored by finding strings of letters — connected in any direction, horizontally, vertically or diagonally — that form valid words at least three letters long. Words 3, 4, 5, 6, 7 or 8 or more letters long score 1, 1, 2, 3, 5 and 11 points, respectively.</blockquote>
 
 <!--break-->
@@ -45,6 +45,48 @@ and the population may look something like this:
 
 Because we don't know what kind of solution we might get, it makes sense to create the initial population randomly.  If there is some prior knowledge about good solutions, those can be used as seed values as well.  Once the population is created, we need to determine which solutions should continue on.
 
+{% highlight python %}
+import random
+from deap import base, creator, tools, algorithms
+
+# Define the size of the board (assume square)
+# Start with standard 4x4 board
+SIZE = 4
+
+def generate_random_boggle_letters():
+    return random.choice(string.ascii_lowercase)
+
+# First the overall simulation needs to be set up.
+# The creator is used to set up the weights for our algorithm.
+# Because board score is the only fitness,
+# and we want that to be maximized, the weight will be 1.
+# A weight of -1 would indicate that we want to minimize.
+creator.create("BoggleFitnessMax", base.Fitness, weights=(1.0,))
+creator.create("Individual", list, fitness = creator.BoggleFitnessMax)
+
+# toolbox contains the evolutionary operators.
+# This is how parameters for the algorithm are added
+# and removed.
+toolbox = base.Toolbox()
+
+# Register the function to generate random letters
+toolbox.register("rand_letter",generate_random_boggle_letters)
+
+# Register the individual.  This will be composed of repeating the 
+# toolbox.rand_letter function n times.  In this case n will be 16, because
+# we have a 4x4 board.
+toolbox.register("individual",
+                 tools.initRepeat,
+                 creator.Individual,
+                 toolbox.rand_letter,
+                 n=SIZE**2)
+# Register the population. The population will be composed of repeating individuals
+toolbox.register("population",tools.initRepeat,list,toolbox.individual)
+
+# Set the intial population to 200 boards.
+pop = toolbox.population(n=200)
+{% endhighlight %}
+
 ### Fitness[^fitness]
 In the natural world, each individual does not have an equal chance to pass their genes onto the next generation.  Fitness is the term to describe the probability that an individual will contribute to the genes of subsequent generations.  Individuals that have the best chance of reproducing are the most "fit" (hence, "survival of the fittest").  The most fit individuals are not necessarily the strongest, fastest or biggest.  For exampl, a particular gene that controls coloring could have a sizable impact on reproduction if it provides great camouflage.
 
@@ -52,8 +94,16 @@ In the natural world, fitness is not as obvious as a single number.  One great t
 
 The actual function to perform the scoring is probably worthy of a post in itself, however I think it would be too big of an aside.  It can be found in the code.
 
+{% highlight python %}
+toolbox.register("evaluate",solve_list)
+{% endhighlight %}
+
 ### Selection
 Once the population has been evaluated for fitness, some of the individuals will reproduce to create the next generation.  In nature, the individuals that would breed would be based on their fitness, mainly the ones that survive and attract a mate.  In our case, we have complete control over this selection process.  For this problem, we'll be using tournament selection[^tourn_select][^deap_tourn].  In tournament selection, several individuals are pulled randomly from the population, where they participate in a "tournament.  One individual is picked froim the group based on their relative fitness values.  Individuals with higher fitness are more likely to be picked, but it's possible that any individual can make it out.
+
+{% highlight python %}
+toolbox.register("select",tools.selTournament, tournsize = 20)
+{% endhighlight %}
 
 ### Mating
 In order to pass on the genes that lead to their success, individuals must mate.  In nature, this takes on many different forms, but ultimately results in a new chromosome which is a combination of the parents' chromosomes.  For our algorithm, this is done via two point crossover[^two_pc].  Two point crossover basically selects two points along the chromosome and then swaps the intermediate sections to create two new chromosomes.
@@ -78,6 +128,9 @@ In our algorithm, this may look like this:
 <div style="color:crimson;background-color:lightpink;display: inline-block;">RGUJOSA</div>
 <div style="color:blue;background-color:powderblue;display: inline-block;">ESERS</div></p>
 
+{% highlight python %}
+toolbox.register("mate", tools.cxTwoPoint)
+{% endhighlight %}
 #### Mutation
 Random mutations are the second mechanism for introducing changes into the population.  After the offspring has been produced, small mutations are introduced into the population.  Naturally this occurs through errors in DNA reproduction and damage to the DNA sequence.  One natural example of this is Charles Darwin's finches.  In the Galapagos Islands, Darwin discovered that many seemingly similar finches were actually different species.  These different species had actually developed many different beak shapes that allowed them access to new food sources.  Some beaks are sharp and pointed to catch insects, while others are broad to eat seeds from cacti.  As these beaks developed, it gave each new species access to the new food source, and a better chance of survival.  It's likely that there were unsuccessful beak mutations as well that were not favorable to reproduction.
 
@@ -90,59 +143,34 @@ Random mutations are the second mechanism for introducing changes into the popul
 
 Algorithmically, there are many ways to approach this, but the mutation must be explicitly defined.  I've chosen to give each letter a small probability to mutate into another random letter.  The aggressiveness of the mutation depend on the supplied probability.  If a small probability is used, it's likely that only a few, if any letters will change.  There are likely other mutations that would work as well, including swapping letters, or just shifting letters.  Because there is no meaningful link between letters, I chose to mutate the letter randomly.
 
+{% highlight python %}
+def mutate_grid(individual, indpb):   
+    for i in range(len(individual)):
+        if random.random() < indpb:
+            individual[i] = generate_random_boggle_letters()
+    
+    return individual,
+
+toolbox.register("mutate", mutate_grid, indpb = 0.15)
+{% endhighlight %}
+
 ## Solution
 
-In the code, each board will be represented as a flattened string of 16 letters for easier processing:
-`SERSPATGLINESERS`  
+Now is the time to apply these principles to actual code.  There are some approximations that I've made for simplicity.  Each board will be represented as a flattened string of 16 letters for easier processing (e.g. `SERSPATGLINESERS`)
 
 Below is the code to set up the algorithm and create the initial population.  
 
-{% highlight python %}
-import random
-from deap import base, creator, tools, algorithms
-
-SIZE = 4
-
-def generate_random_boggle_letters():
-    return random.choice(string.ascii_lowercase)
-
-# First the overall simulation needs to be set up.
-# The creator is used to set up the weights for our algorithm.
-# Because board score is the only fitness,
-# and we want that to be maximized, the weight will be 1.
-# A weight of -1 would indicate that we want to minimize fitness
-creator.create("FitnessMax", base.Fitness, weights=(1.0,))
-creator.create("Individual", list ,fitness = creator.FitnessMax)
 
 
-toolbox = base.Toolbox()
-
-# Seed the initial population with random Boggle boards
-toolbox.register("rand_letter",generate_random_boggle_letters)
-toolbox.register("individual",
-                 tools.initRepeat,
-                 creator.Individual,
-                 toolbox.rand_letter,
-                 n=SIZE**2)
-toolbox.register("population",tools.initRepeat,list,toolbox.individual)
-{% endhighlight %}
-
-Many more successful solutions can be seen in the [Oct. 21st Ridder](http://fivethirtyeight.com/features/rig-the-election-with-math/).
+Many more successful solutions can be seen in the [Oct. 28th Ridder](http://fivethirtyeight.com/features/rig-the-election-with-math/).
 
 ## References
-
 Header Image By <a rel="nofollow" class="external free" href="http://wellcomeimages.org/indexplus/obf_images/6c/d2/f0a4468f0181ae48d0e410beeb51.jpg">http://wellcomeimages.org/indexplus/obf_images/6c/d2/f0a4468f0181ae48d0e410beeb51.jpg</a> Gallery: <a rel="nofollow" class="external free" href="http://wellcomeimages.org/indexplus/image/L0020440.html">http://wellcomeimages.org/indexplus/image/L0020440.html</a>, <a href="http://creativecommons.org/licenses/by/4.0" title="Creative Commons Attribution 4.0">CC BY 4.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=35994175">Link</a>
-
 [^birdimg]: By <a href="//commons.wikimedia.org/w/index.php?title=User:Jmalvin17&amp;action=edit&amp;redlink=1" class="new" title="User:Jmalvin17 (page does not exist)">Jackie malvin</a> - <span class="int-own-work" lang="en">Own work</span>, <a href="http://creativecommons.org/licenses/by-sa/4.0" title="Creative Commons Attribution-Share Alike 4.0">CC BY-SA 4.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=40655181">Link</a>
-
 [^wikiga]:[https://en.wikipedia.org/wiki/Genetic_algorithm](https://en.wikipedia.org/wiki/Genetic_algorithm)
-
 [^fitness]:[https://en.wikipedia.org/wiki/Natural_selection#Fitness](https://en.wikipedia.org/wiki/Natural_selection#Fitness)
-
 [^beaks]:<a title="By John Gould (14.Sep.1804 - 3.Feb.1881) [Public domain], via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File%3ADarwin's_finches.jpeg"></a>
-
 [^crossoverpic]:By <a href="//commons.wikimedia.org/w/index.php?title=User:R0oland&amp;action=edit&amp;redlink=1" class="new" title="User:R0oland (page does not exist)">R0oland</a> - <span class="int-own-work" lang="en">Own work</span>, <a href="http://creativecommons.org/licenses/by-sa/3.0" title="Creative Commons Attribution-Share Alike 3.0">CC BY-SA 3.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=29950354">Link</a>
-
 [^tourn_select]:[https://en.wikipedia.org/wiki/Tournament_selection](https://en.wikipedia.org/wiki/Tournament_selection)
 [^deap_tourn]:[http://deap.readthedocs.io/en/master/api/tools.html#deap.tools.selTournament](http://deap.readthedocs.io/en/master/api/tools.html#deap.tools.selTournament)
 [^two_pc]:[https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Two-point_crossover](https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Two-point_crossover)
