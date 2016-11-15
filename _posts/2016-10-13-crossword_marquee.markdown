@@ -1,10 +1,10 @@
 ---
-layout: post
-title: Marquee Mix-Up
-date: 2016-10-13T08:00:00.000Z
-author: Andrew
+layout:     post
+title:      Marquee Mix-Up
+date:       2016-10-13T08:00:00.000Z
+author:     Andrew
 header-img: img/Pencil_macro_2_kamranki.jpg
-tags: 'puzzles,crosswords,personal'
+tags:       puzzles crosswords personal
 ---
 
 Hello everyone! Today I'm happy to present my second crossword creation.  After fielding ideas from the crowd and countless iterations, it's finally complete.

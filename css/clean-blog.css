@@ -27,6 +27,7 @@ h6 {
 }
 a {
   color: #404040;
+  text-decoration: underline;
 }
 a:hover,
 a:focus {
@@ -36,6 +37,11 @@ a img:hover,
 a img:focus {
   cursor: zoom-in;
 }
+
+blockquote p{
+   margin: 0px 0;
+}
+
 blockquote {
   color: #808080;
   font-style: italic;
@@ -200,6 +206,14 @@ hr.small {
   font-weight: 300;
   font-size: 20px;
 }
+
+.intro-header .post-heading .tags a {
+  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  color: white;
+}
+
 .intro-header .post-heading .meta a {
   color: white;
 }
@@ -253,12 +267,12 @@ hr.small {
 
 .post-excerpt:after {
   position: absolute;
-  bottom: 0;  
+  bottom: 0;
   height: 100%;
   width: 100%;
   content: "";
   background: linear-gradient(to top,
-     rgba(255,255,255, 1) 5%, 
+     rgba(255,255,255, 1) 5%,
      rgba(255,255,255, 0) 50%
   );
   pointer-events: none; /* so the text is still selectable */
