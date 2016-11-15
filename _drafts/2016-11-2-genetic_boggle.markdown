@@ -13,7 +13,7 @@ Each week, [FiveThirtyEight](http://fivethirtyeight.com) posts a puzzle call the
 
 > What arrangement of any letters on a Boggle board has the most points attainable?  Boggle is played with a 4-by-4 grid of letters. Points are scored by finding strings of letters — connected in any direction, horizontally, vertically or diagonally — that form valid words at least three letters long. Words 3, 4, 5, 6, 7 or 8 or more letters long score 1, 1, 2, 3, 5 and 11 points, respectively.
 
-I decided to approach this puzzle using a genetic algorithm, using an algorithm to mimic natural selection.  This is an approach I don't have much experience with, but wanted to give it a shot.  Prior knowledge of programming, genetics, or Boggle isn't required.  Additionally, I hope everyone will be able to skip the code and still learn something! I will be including code snippets throughout this post, and the full code can be found here:.  Python 3.5 and the [deap toolbox](https://github.com/DEAP/deap) were the primarly tools used.
+I decided to approach this puzzle using a genetic algorithm, which mimics natural selection.  This is an approach I don't have much experience with, but wanted to give it a shot.  Prior knowledge of programming, genetics, or Boggle isn't required.  I will be including code snippets throughout the post.  Feel free to skip the code, I intend for you to still learn something without it! Python 3.5 and the [deap toolbox](https://github.com/DEAP/deap) were the primarly tools used.
 <!--break-->
 
 ## Genetic Algorithm Background
@@ -21,7 +21,7 @@ I decided to approach this puzzle using a genetic algorithm, using an algorithm 
 
 > A genetic algorithm is a metaheuristic inspired by the process of natural selection. Genetic algorithms are commonly used to generate high-quality solutions to optimization and search problems by relying on bio-inspired operators such as mutation, crossover and selection. [^wikiga]
 
-It may not seem obvious at first how this could be used to generate high scoring boards, but sit tight!  Natural selection typically works through the following steps, which I'll elaborate on later.
+It may not seem obvious at first how this could be used to generate high scoring Boggle boards, but sit tight!  Natural selection works via the following process:
 
 1. Start with a population of possible solutions ([population](#population))
 2. Evaluate them to determine which ones are the best (most fit) ([fitness](#fitness))
@@ -32,9 +32,11 @@ It may not seem obvious at first how this could be used to generate high scoring
 
 If you would like a modern example of natural selection, check out the [peppered moth](https://en.wikipedia.org/wiki/Peppered_moth_evolution).
 
-Now for the fun stuff!  Because scoring all possible combinations of boards is practically impossible, we'll need another solution.  
+Ok, now for the fun stuff!  Generating all possible boards is practically impossible, especially given the computing power at my disposal. Instead, let's think about the following.  
 
-Instead, let's think about the following.  First, we could generate and score a few hundred boards.  Once they have been scored, new boards can be created by combining portions of the higher scoring boards.  Lastly, small disturbances can be introduced to the resulting boards.  At the end of this process, we will have a new population of boards based primarily on the highest scoring boards from the previous generation.  The goal is that over enough generations, the lower scoring boards will be reduced in the population and we will be left with a very high scoring board!
+Let's generate ~200 random boards and score them to start.  There will be a range of scores present across the boards.  Now let's take the high scoring boards, and create some new boards by swapping sections of letters amongst them.  This leaves us with some boards that have common sections between them and some of the old boards as well.  Lastly, let's change a few random letters of some boards around.  This will keep things fresh and hopefully open some new avenues for higher scores.  As this process continues, low scoring boards should be eliminated and only high scoring ones will remain (hopefully).
+
+Let's get into some of the nitty-gritty details.
 
 ### Population {#population}
 
@@ -42,16 +44,20 @@ A **population** is a group of organisms of the same species, in a particular ar
 
 When thinking about the population for our puzzle, it's not quite as intuitive as a flock of birds or forest of trees.  Additionally, unlike nature, we have complete control over the number of individuals and the initial population.  We are seeking the highest scoring individual board, so it makes sense for the population to be a big group of boards.
 
-| This is an individual board:   |      ![boggle board]({{ site.baseurl }}/img/boggle_individual.jpg)      |
+<p align="center">
+<img style="display:inline-block;vertical-align:top;"  src="{{ site.baseurl }}/img/boggle_individual.jpg" />
+</p>
+
+<p align="center">
+<img style="display:inline-block;vertical-align:top;"  src="{{ site.baseurl }}/img/boggle_population.jpg" />
+</p>
 
 
 
-which will be represented by a 16 character string: `SERSPATGLINESERS`.  This string can be roughly translated to our Boggle board's genome, and each individual letter can be thought of as a gene.
-and the population may look something like this:
-![boggle board population]({{ site.baseurl }}/img/boggle_population.jpg)
 
-Because we don't know what kind of solution we might get, it makes sense to create the initial population randomly.  If there is some prior knowledge about good solutions, those can be used as seed values as well.  Once the population is created, we need to determine which solutions should continue on.
+The pictures show an example board and population.  Each board will be represented by a 16 character string. `SERSPATGLINESERS`.  This string can be roughly translated to our Boggle board's genome, and each individual letter can be thought of as a gene.
 
+Because we don't know what kind of solution we might get, the initial population will be created randomly.  Once the population is created, we need to determine which solutions should continue on.
 
 {% highlight python %}
 import random
@@ -95,7 +101,7 @@ toolbox.register("population",tools.initRepeat,list,toolbox.individual)
 pop = toolbox.population(n=200)
 {% endhighlight %}
 
-### Fitness[^fitness] {#fitness}
+### Fitness {#fitness}
 In the natural world, each individual does not have an equal chance to pass their genes onto the next generation.  Fitness is the term to describe the probability that an individual will contribute to the genes of subsequent generations.  Individuals that have the best chance of reproducing are the most "fit" (hence, "survival of the fittest").  The most fit individuals are not necessarily the strongest, fastest or biggest.  For exampl, a particular gene that controls coloring could have a sizable impact on reproduction if it provides great camouflage.
 
 In the natural world, fitness is not as obvious as a single number.  One great thing about our problem is that Boggle boards can be scored easily, which gives each board a very clear fitness value.  Our fitness function will be the total score of all possible words in the board.  After all, this is the goal of the puzzle, so it makes sense to try to maximize this value.
@@ -179,8 +185,6 @@ Header Image By <a rel="nofollow" class="external free" href="http://wellcomeima
 [^birdimg]: By <a href="//commons.wikimedia.org/w/index.php?title=User:Jmalvin17&amp;action=edit&amp;redlink=1" class="new" title="User:Jmalvin17 (page does not exist)">Jackie malvin</a> - <span class="int-own-work" lang="en">Own work</span>, <a href="http://creativecommons.org/licenses/by-sa/4.0" title="Creative Commons Attribution-Share Alike 4.0">CC BY-SA 4.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=40655181">Link</a>
 
 [^wikiga]:[https://en.wikipedia.org/wiki/Genetic_algorithm](https://en.wikipedia.org/wiki/Genetic_algorithm)
-
-[^fitness]:[https://en.wikipedia.org/wiki/Natural_selection#Fitness](https://en.wikipedia.org/wiki/Natural_selection#Fitness)
 
 [^beaks]:<a title="By John Gould (14.Sep.1804 - 3.Feb.1881) [Public domain], via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File%3ADarwin's_finches.jpeg"></a>
 
