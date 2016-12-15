@@ -7,13 +7,11 @@ header-img: img/The_family_of_Laocoon_entwined_in_coils_of_DNA.jpg
 tags:       puzzles programming
 ---
 
-Recently, I had a bit of fun solving a puzzle, so I decided to share it.
-
-Each week, [FiveThirtyEight](http://fivethirtyeight.com) posts a puzzle call the Riddler.  Here is the [Oct. 21st Riddler](http://fivethirtyeight.com/features/this-challenge-will-boggle-your-mind/)
+Each week, [FiveThirtyEight](http://fivethirtyeight.com) posts a puzzle call the Riddler.  On Oct. 21st, this was the [Riddler](http://fivethirtyeight.com/features/this-challenge-will-boggle-your-mind/)
 
 > What arrangement of any letters on a Boggle board has the most points attainable?  Boggle is played with a 4-by-4 grid of letters. Points are scored by finding strings of letters — connected in any direction, horizontally, vertically or diagonally — that form valid words at least three letters long. Words 3, 4, 5, 6, 7 or 8 or more letters long score 1, 1, 2, 3, 5 and 11 points, respectively.
 
-I decided to approach this puzzle using a genetic algorithm, which mimics natural selection.  This is an approach I don't have much experience with, but wanted to give it a shot.  Prior knowledge of programming, genetics, or Boggle isn't required.  I will be including code snippets throughout the post.  Feel free to skip the code, I intend for you to still learn something without it! Python 3.5 and the [deap toolbox](https://github.com/DEAP/deap) were the primarly tools used.
+I had a lot of fun solving this puzzle, so I decided to share.  I experimented with using a genetic algorithm, which mimics natural selection.  This is an approach I don't have much experience with, but wanted to give it a shot.  Prior knowledge of programming, genetics, or Boggle isn't required.  I will be including code snippets throughout the post.  Feel free to skip the code,  hopefully you'll still learn something without it! Python 3.5 and the [deap toolbox](https://github.com/DEAP/deap) were used.
 <!--break-->
 
 ## Genetic Algorithm Background
@@ -21,26 +19,24 @@ I decided to approach this puzzle using a genetic algorithm, which mimics natura
 
 > A genetic algorithm is a metaheuristic inspired by the process of natural selection. Genetic algorithms are commonly used to generate high-quality solutions to optimization and search problems by relying on bio-inspired operators such as mutation, crossover and selection. [^wikiga]
 
-It may not seem obvious at first how this could be used to generate high scoring Boggle boards, but sit tight!  Natural selection works via the following process:
+It may not seem obvious at first how this could be used to generate high scoring Boggle boards, but sit tight!  Generally, natural selection works via the following process:
 
 1. Start with a population of possible solutions ([population](#population))
 2. Evaluate them to determine which ones are the best (most fit) ([fitness](#fitness))
-3. Select the most fit individuals ([selection](#selection))
-4. The selected individuals reproduce ([mating](#mating))
+3. The most fit individuals survive ([selection](#selection))
+4. The surviving individuals reproduce ([mating](#mating))
 5. Random mutations are introduced into the gene pool ([mutation](#mutation))
 6. Repeat 2-5 for many generations.
 
 If you would like a modern example of natural selection, check out the [peppered moth](https://en.wikipedia.org/wiki/Peppered_moth_evolution).
 
-Ok, now for the fun stuff!  Generating all possible boards is practically impossible, especially given the computing power at my disposal. Instead, let's think about the following.  
+Ok, now for the fun stuff!  Generating all the possible boggle boards would be practically impossible, so let's pick a smaller number, say a million.  If we scored those boards, we should see a wide range of scores.  Now let's take the high scoring boards, and create some new boards by swapping sections of letters amongst them.  This leaves us with some boards that have common sections between them and some of the old boards as well.  Lastly, let's change a few random letters of some boards around.  This will keep things fresh and hopefully open some new avenues for higher scores.  As this process continues, low scoring boards should be eliminated and only high scoring ones will remain (hopefully).
 
-Let's generate ~200 random boards and score them to start.  There will be a range of scores present across the boards.  Now let's take the high scoring boards, and create some new boards by swapping sections of letters amongst them.  This leaves us with some boards that have common sections between them and some of the old boards as well.  Lastly, let's change a few random letters of some boards around.  This will keep things fresh and hopefully open some new avenues for higher scores.  As this process continues, low scoring boards should be eliminated and only high scoring ones will remain (hopefully).
-
-Let's get into some of the nitty-gritty details.
+Now here's some of the nitty-gritty details.
 
 ### Population {#population}
 
-A **population** is a group of organisms of the same species, in a particular area, that are capable of reproducing.  For example, this could be a species of birds on an island, or a species of tree in a forest.  Within the population, an individual's physical traits are controlled by their **genome**.  Genomes are broken down into **genes**, which combine to control the physical traits of the individual.  Everyone is probably familiar with some traits that are controlled by genes, such as eye color, hair color and blood type.
+A population is a group of organisms of the same species, in a particular area, that are capable of reproducing.  For example, this could be a species of birds on an island, or a species of tree in a forest.  Within the population, an individual's physical traits are controlled by their genome.  Genomes are broken down into genes, which combine to control the physical traits of the individual.  Everyone is probably familiar with some traits that are controlled by genes, such as eye color, hair color and blood type.
 
 When thinking about the population for our puzzle, it's not quite as intuitive as a flock of birds or forest of trees.  Additionally, unlike nature, we have complete control over the number of individuals and the initial population.  We are seeking the highest scoring individual board, so it makes sense for the population to be a big group of boards.
 
@@ -53,74 +49,27 @@ When thinking about the population for our puzzle, it's not quite as intuitive a
 </p>
 
 
+The pictures show an example board and population.  Each board can be represented by a 16 character string, ex: `SERSPATGLINESERS`.  This string can be roughly translated to our Boggle board's genome, and each individual letter can be thought of as a gene.
 
-
-The pictures show an example board and population.  Each board will be represented by a 16 character string. `SERSPATGLINESERS`.  This string can be roughly translated to our Boggle board's genome, and each individual letter can be thought of as a gene.
-
-Because we don't know what kind of solution we might get, the initial population will be created randomly.  Once the population is created, we need to determine which solutions should continue on.
-
-{% highlight python %}
-import random
-from deap import base, creator, tools, algorithms
-
-# Define the size of the board (assume square)
-# Start with standard 4x4 board
-SIZE = 4
-
-def generate_random_boggle_letters():
-    return random.choice(string.ascii_lowercase)
-
-# First the overall simulation needs to be set up.
-# The creator is used to set up the weights for our algorithm.
-# Because board score is the only fitness,
-# and we want that to be maximized, the weight will be 1.
-# A weight of -1 would indicate that we want to minimize.
-creator.create("BoggleFitnessMax", base.Fitness, weights=(1.0,))
-creator.create("Individual", list, fitness = creator.BoggleFitnessMax)
-
-# toolbox contains the evolutionary operators.
-# This is how parameters for the algorithm are added
-# and removed.
-toolbox = base.Toolbox()
-
-# Register the function to generate random letters
-toolbox.register("rand_letter",generate_random_boggle_letters)
-
-# Register the individual.  This will be composed of repeating the
-# toolbox.rand_letter function n times.  In this case n will be 16, because
-# we have a 4x4 board.
-toolbox.register("individual",
-                 tools.initRepeat,
-                 creator.Individual,
-                 toolbox.rand_letter,
-                 n=SIZE**2)
-# Register the population. The population will be composed of repeating individuals
-toolbox.register("population",tools.initRepeat,list,toolbox.individual)
-
-# Set the intial population to 200 boards.
-pop = toolbox.population(n=200)
-{% endhighlight %}
+Because we don't know what kind of solution we might get, the initial population will be created randomly.  Once the population is created, we need to determine which solutions should survive and reproduce.
 
 ### Fitness {#fitness}
-In the natural world, each individual does not have an equal chance to pass their genes onto the next generation.  Fitness is the term to describe the probability that an individual will contribute to the genes of subsequent generations.  Individuals that have the best chance of reproducing are the most "fit" (hence, "survival of the fittest").  The most fit individuals are not necessarily the strongest, fastest or biggest.  For exampl, a particular gene that controls coloring could have a sizable impact on reproduction if it provides great camouflage.
+In the natural world, each individual does not have an equal chance to pass their genes onto the next generation.  Fitness is the term to describe the probability that an individual will contribute to the genes of subsequent generations.  Individuals that have the best chance of reproducing are the most "fit" (hence, "survival of the fittest").  The most fit individuals are not necessarily the strongest, fastest or biggest.  For example, a particular gene that controls coloring could have a sizable impact on reproduction if it provides great camouflage.
 
 In the natural world, fitness is not as obvious as a single number.  One great thing about our problem is that Boggle boards can be scored easily, which gives each board a very clear fitness value.  Our fitness function will be the total score of all possible words in the board.  After all, this is the goal of the puzzle, so it makes sense to try to maximize this value.
 
 The actual function to perform the scoring is probably worthy of a post in itself, however I think it would be too big of an aside.  It can be found in the code.
 
-{% highlight python %}
-toolbox.register("evaluate",solve_list)
-{% endhighlight %}
+Here's an animation showing a particular board being solved.
+<p align="center">
+<img style="display:inline-block;vertical-align:top;"  src="{{ site.baseurl }}/img/path_animation.gif" />
+</p>
 
 ### Selection {#selection}
-Once the population has been evaluated for fitness, some of the individuals will reproduce to create the next generation.  In nature, the individuals that would breed would be based on their fitness, mainly the ones that survive and attract a mate.  In our case, we have complete control over this selection process.  For this problem, we'll be using tournament selection[^tourn_select][^deap_tourn].  In tournament selection, several individuals are pulled randomly from the population, where they participate in a "tournament.  One individual is picked froim the group based on their relative fitness values.  Individuals with higher fitness are more likely to be picked, but it's possible that any individual can make it out.
-
-{% highlight python %}
-toolbox.register("select",tools.selTournament, tournsize = 20)
-{% endhighlight %}
+Once the population has been evaluated for fitness, some of the individuals will reproduce to create the next generation.  In nature, the individuals that would breed would be based on their fitness, mainly the ones that survive and attract a mate.  In our case, we have complete control over this selection process.  For this problem, we'll be using tournament selection[^tourn_select][^deap_tourn].  In tournament selection, several individuals are pulled randomly from the population, where they participate in a "tournament".  One individual is picked from the tournament based on their relative fitness values.  Individuals with higher fitness are more likely to be picked, but it's possible that any individual can make it out.
 
 ### Mating {#mating}
-In order to pass on the genes that lead to their success, individuals must mate.  In nature, this takes on many different forms, but ultimately results in a new chromosome which is a combination of the parents' chromosomes.  For our algorithm, this is done via two point crossover[^two_pc].  Two point crossover basically selects two points along the chromosome and then swaps the intermediate sections to create two new chromosomes.
+In order to pass on the genes that lead to their success, individuals must mate.  In nature, this takes on many different forms, but ultimately results in a new genome which is a combination of the parents' genome.  For our algorithm, this is done via two point crossover[^two_pc].  Two point crossover selects two points along the genome and then swaps the intermediate sections to create two new chromosomes.
 
 {::options parse_block_html="true" /}
 <p align="center">
@@ -142,9 +91,6 @@ In our algorithm, this may look like this:
 <div style="color:crimson;background-color:lightpink;display: inline-block;">RGUJOSA</div>
 <div style="color:blue;background-color:powderblue;display: inline-block;">ESERS</div></p>
 
-{% highlight python %}
-toolbox.register("mate", tools.cxTwoPoint)
-{% endhighlight %}
 
 ### Mutation {#mutation}
 Random mutations are the second mechanism for introducing changes into the population.  After the offspring has been produced, small mutations are introduced into the population.  Naturally this occurs through errors in DNA reproduction and damage to the DNA sequence.  One natural example of this is Charles Darwin's finches.  In the Galapagos Islands, Darwin discovered that many seemingly similar finches were actually different species.  These different species had actually developed many different beak shapes that allowed them access to new food sources.  Some beaks are sharp and pointed to catch insects, while others are broad to eat seeds from cacti.  As these beaks developed, it gave each new species access to the new food source, and a better chance of survival.  It's likely that there were unsuccessful beak mutations as well that were not favorable to reproduction.
@@ -156,25 +102,28 @@ Random mutations are the second mechanism for introducing changes into the popul
 </p>
 {::options parse_block_html="false" /}
 
-Algorithmically, there are many ways to approach this, but the mutation must be explicitly defined.  I've chosen to give each letter a small probability to mutate into another random letter.  The aggressiveness of the mutation depend on the supplied probability.  If a small probability is used, it's likely that only a few, if any letters will change.  There are likely other mutations that would work as well, including swapping letters, or just shifting letters.  Because there is no meaningful link between letters, I chose to mutate the letter randomly.
-
-{% highlight python %}
-def mutate_grid(individual, indpb):   
-    for i in range(len(individual)):
-        if random.random() < indpb:
-            individual[i] = generate_random_boggle_letters()
-
-    return individual,
-
-toolbox.register("mutate", mutate_grid, indpb = 0.15)
-{% endhighlight %}
+Algorithmically, there are many ways to approach this, but the mutation must be explicitly defined.  I've chosen to give each letter a small probability to mutate into another random letter.  The aggressiveness of the mutation depend on the probability.  It's likely there are other mutations that would work as well, including swapping letters, or additionally shifting letters.  Because there is no meaningful link between letters, I chose to mutate the letter randomly.  It's also very easy to implement.
 
 ## Solution
+Following this process, I generated 1 million random boards and evolved them through 100 generations.  This process lead to a final score of
+
+Here is a plot of the maximum scored board in each generation, showing a gradual upward trend.  It's working!  Without any specific knowledge about Boggle rules or what makes a good Boggle board, we've been able to start to make some very high scoring boards!
+
+Here is how the boards evolved over the generations
+<p align="center">
+<img style="display:inline-block;vertical-align:top;"  src="{{ site.baseurl }}/img/scores_over_generation.png" />
+</p>
+<p align="center">
+<img style="display:inline-block;vertical-align:top;"  src="{{ site.baseurl }}/img/evolve_animation.gif" />
+</p>
+
+And the highest scoring board generated, with a score of 3001 is:
+<p align="center">
+<img style="display:inline-block;vertical-align:top;"  src="{{ site.baseurl }}/img/final_board.png" />
+</p>
 
 
-
-Below is the code to set up the algorithm and create the initial population.  
-
+Livnat, A., Papadimitriou, C. Sex as an Algorithm: The Theory of Evolution Under the Lens of Computation. Communications of the ACM, 59, 11, 84-93
 
 
 Many more successful solutions can be seen in the [Oct. 28th Ridder](http://fivethirtyeight.com/features/rig-the-election-with-math/).
