@@ -148,7 +148,7 @@ toolbox.register("mutate", mutate_grid, indpb=letter_mutate_prob)
 {% endhighlight %}
 
 ## Solution
-Gathering this all together, 1 million boards were generated and evolved over 100 generations.  Without specific knowledge about what makes a high scoring Boggle board, we've been able to find some very high scoring boards!  The full simulation code can be found [here](https://github.com/andrewzwicky/puzzles/blob/master/FiveThirtyEightRiddler/2016-10-21/boggle.py#L217-L262), along with the code to generate all the images.  The final board has a score of 3001:
+Gathering this all together, 1 million boards were generated and evolved over 100 generations.  Without specific knowledge about what makes a high scoring Boggle board, we've been able to find some very high scoring boards!  Likely next steps would be to continue to refine the parameters and probabilities used to further optimize the result.  For now though, I'm pretty happy with the result.  The final board has a score of 3001:
 <p align="center">
 <img style="display:inline-block;vertical-align:top;"  src="{{ site.baseurl }}/img/final_board.png" height="300" width="300"/>
 </p>
@@ -163,7 +163,9 @@ And here are all of the generations:<br>
 <img style="display:inline-block;vertical-align:top;"  src="{{ site.baseurl }}/img/evolve_animation.gif" height="300" width="300"/>
 </p>
 
-Many more successful solutions can be seen in the [Oct. 28th Ridder](http://fivethirtyeight.com/features/rig-the-election-with-math/).
+The full simulation code can be found [here](https://github.com/andrewzwicky/puzzles/blob/master/FiveThirtyEightRiddler/2016-10-21/boggle.py#L217-L262), along with the code to generate all the images.  
+
+More solutions can be seen at the end of the [Oct. 28th Ridder](http://fivethirtyeight.com/features/rig-the-election-with-math/).
 
 ## References
 Header Image By <a rel="nofollow" class="external free" href="http://wellcomeimages.org/indexplus/obf_images/6c/d2/f0a4468f0181ae48d0e410beeb51.jpg">http://wellcomeimages.org/indexplus/obf_images/6c/d2/f0a4468f0181ae48d0e410beeb51.jpg</a> Gallery: <a rel="nofollow" class="external free" href="http://wellcomeimages.org/indexplus/image/L0020440.html">http://wellcomeimages.org/indexplus/image/L0020440.html</a>, <a href="http://creativecommons.org/licenses/by/4.0" title="Creative Commons Attribution 4.0">CC BY 4.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=35994175">Link</a>
