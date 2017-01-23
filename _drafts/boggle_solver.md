@@ -61,10 +61,11 @@ As we traverse through the grid, check if our currently built word is a word in 
 2. We could check words as we go along and stop when we find a word.
 3. We could check words as we go along and stop when our currently string doesn't start any words in our list.
 
-The structure I ended up using for
+The data structure I settled on was the [trie](https://en.wikipedia.org/wiki/Trie) [^trie_python].  A trie is an ordered tree structure that, as it is traversed, can efficiently know when a word is not contained in a potential list.  The trie is created by first creating a set of nodes that correspond to the first letters of all the words in the list.  Then, for each of those letters, a node is added for each second letter in the words starting with that original letter.  
 
-http://stackoverflow.com/questions/11015320/how-to-create-a-trie-in-python
+This allows the search for a word to proceed letter by letter, similar to how you would look up a word in the dictionary if someone was spelling the word to you.  As soon as you can't find the next letter, you know the word is not contained!
 
+[^trie_python]: [How to create a TRIE in Python](http://stackoverflow.com/questions/11015320/how-to-create-a-trie-in-python)
 [^blog1]:[How to find list of possible words from a letter matrix [Boggle Solver]](http://stackoverflow.com/questions/746082/how-to-find-list-of-possible-words-from-a-letter-matrix-boggle-solver)
 [^blog2]: [Solving the Boggle Game - Recursion, Prefix Tree, and Dynamic Programming](http://exceptional-code.blogspot.com/2012/02/solving-boggle-game-recursion-prefix.html)
 [^blog3]: [Solving Boggle boards at scale](https://blog.niallconnaughton.com/2015/12/10/solving-boggle-boards-at-scale/)
