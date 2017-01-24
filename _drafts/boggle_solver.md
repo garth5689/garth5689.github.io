@@ -15,6 +15,7 @@ I'll rephrase the rules of Boggle for everyone who may have forgotten them since
 
 > Boggle is played with a 4-by-4 grid of letters. Points are scored by finding strings of letters — connected in any direction, horizontally, vertically or diagonally — that form valid words at least three letters long. Words 3, 4, 5, 6, 7 or 8 or more letters long score 1, 1, 2, 3, 5 and 11 points, respectively.
 
+### Dictionary
 Let's start by talking about the dictionary.  In order to know if we have words, we have to define what a word is.  In this case, I'll be using a public domain word list titled [enable1.txt](http://norvig.com/ngrams/enable1.txt).  It contains approximately 170,000 of the most commonly used words.  There's nothing particularly special about this list, it just happens to be very popular and public domain.
 
 First, it's important to note what we don't know.  We can't know the potential orientation of any word, or it's length.  We also can't know if and when words will be contained in other words.
@@ -54,16 +55,25 @@ def neighbors(x, y):
             yield (nx, ny)
 ~~~
 
-Next, let's think about how we want to efficiently detect words.  Let's brainstorm some approaches.
+
 
 ### Naive
-As we traverse through the grid, check if our currently built word is a word in our list.  Keep going until all possible traversals are done.
-2. We could check words as we go along and stop when we find a word.
-3. We could check words as we go along and stop when our currently string doesn't start any words in our list.
+The most basic solution would be to traverse all possible paths through the grid, only stopping when there are no more available squares to move to.  Along the way, each string of letters would be checked to see if it's a word.  This approach would certainly be the the most thorough, but would also lead to countless unnecessary calculations.  
 
-The data structure I settled on was the [trie](https://en.wikipedia.org/wiki/Trie) [^trie_python].  A trie is an ordered tree structure that, as it is traversed, can efficiently know when a word is not contained in a potential list.  The trie is created by first creating a set of nodes that correspond to the first letters of all the words in the list.  Then, for each of those letters, a node is added for each second letter in the words starting with that original letter.  
+### Path Truncating
+The first optimization we should take is to only continue following paths if we know it could result in a word.  When the first four letter of the string are "XKCD" for example, it's fine to stop and move to the next path, because no words in our list start with "XKCD", which should save considerable computation time.
+
+To summarize, our solution is now to search all the paths, but stop once we know a string can't result in a word.  Now we're doing far fewer lookups in the dictionary, but still performing a "dumb" lookup.  Conveniently, there's a data structure that can help us more efficiently test if a word is in our list.
+
+#### Trie
+One of the data structures best suited for this task is the [trie](https://en.wikipedia.org/wiki/Trie) [^trie_python].  A trie is an ordered tree structure that, as it is traversed, can efficiently know when a word is not contained in a potential list.  The trie is created by first creating a set of nodes that correspond to the first letters of all the words in the list.  Then, for each of those letters, a node is added for each second letter in the words starting with that original letter.  
 
 This allows the search for a word to proceed letter by letter, similar to how you would look up a word in the dictionary if someone was spelling the word to you.  As soon as you can't find the next letter, you know the word is not contained!
+
+In python, the trie is constructed as a dict.  At the top level, the keys are the first letters of all the words.  At the next level, the keys are the second letters of words and so on.  Additionally, because we want to find words that are contained within other words, there is a special key that signals that this prefix is a word itself.  This makes sure that we both count that word, but also continue searching.
+
+~~~ python
+~~~
 
 [^trie_python]: [How to create a TRIE in Python](http://stackoverflow.com/questions/11015320/how-to-create-a-trie-in-python)
 [^blog1]:[How to find list of possible words from a letter matrix [Boggle Solver]](http://stackoverflow.com/questions/746082/how-to-find-list-of-possible-words-from-a-letter-matrix-boggle-solver)
