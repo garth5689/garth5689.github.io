@@ -3,8 +3,9 @@ layout:     post
 title:      Generating Boggle Boards with Genetics
 date:       2016-12-16 1:00:00
 author:     Andrew
-header-img: img/The_family_of_Laocoon_entwined_in_coils_of_DNA.jpg
+header-img: img/posts/genetic_boggle/The_family_of_Laocoon_entwined_in_coils_of_DNA.jpg
 tags:       puzzles programming
+header-credit: "Wellcome Images CC BY 4.0, via Wikimedia Commons"
 ---
 
 Each week, [FiveThirtyEight](http://fivethirtyeight.com) posts a puzzle call the Riddler.  On Oct. 21st, this was the [Riddler](http://fivethirtyeight.com/features/this-challenge-will-boggle-your-mind/):
@@ -44,12 +45,12 @@ For our population it makes sense to just have a whole bunch of boards.  Unlike 
 
 <p align="center">
 Here is an example individual:<br>
-<img style="display:inline-block;vertical-align:top;"  src="{{ site.baseurl }}/img/boggle_individual.jpg" />
+<img style="display:inline-block;vertical-align:top;"  src="{{ site.baseurl }}/img/posts/genetic_boggle/boggle_individual.jpg" />
 </p>
 
 <p align="center">
 And here's an example population:<br>
-<img style="display:inline-block;vertical-align:top;"  src="{{ site.baseurl }}/img/boggle_population.jpg" />
+<img style="display:inline-block;vertical-align:top;"  src="{{ site.baseurl }}/img/posts/genetic_boggle/boggle_population.jpg" />
 </p>
 
 
@@ -66,7 +67,7 @@ The actual function to perform the scoring is probably worthy of a post in itsel
 
 <p align="center">
 Here's an animation showing a particular board being solved:<br>
-<img style="display:inline-block;vertical-align:top;"  src="{{ site.baseurl }}/img/path_animation.gif" height="300" width="300"/>
+<img style="display:inline-block;vertical-align:top;"  src="{{ site.baseurl }}/img/posts/genetic_boggle/path_animation.gif" height="300" width="300"/>
 </p>
 
 ### Selection {#selection}
@@ -82,7 +83,7 @@ In order to pass on the genes that lead to their success, individuals must mate.
 </p>
 <p align="center">
 In our algorithm, this may look like this:<br>  
-<img style="display:inline-block;vertical-align:top;"  src="{{ site.baseurl }}/img/crossover.png" />
+<img style="display:inline-block;vertical-align:top;"  src="{{ site.baseurl }}/img/posts/genetic_boggle/crossover.png" />
 </p>
 {::options parse_block_html="false" /}
 
@@ -91,7 +92,7 @@ Random mutations are the second mechanism for introducing changes into the popul
 
 {::options parse_block_html="true" /}
 <p align="center">
-<img style="display:inline-block;vertical-align:top;"  src="{{ site.baseurl }}/img/Darwin's_finches.jpeg" />
+<img style="display:inline-block;vertical-align:top;"  src="{{ site.baseurl }}/img/posts/genetic_boggle/Darwin's_finches.jpeg" />
 [^beaks]
 </p>
 {::options parse_block_html="false" /}
@@ -102,24 +103,22 @@ Algorithmically, there are many ways to approach this, but the mutation must be 
 ## Solution
 Gathering this all together, 1 million boards were generated and evolved over 100 generations.  Without specific knowledge about what makes a high scoring Boggle board, we've been able to find some very high scoring boards!  Likely next steps would be to continue to refine the parameters and probabilities used to further optimize the result.  For now though, I'm pretty happy with the result.  The final board has a score of 3001:
 <p align="center">
-<img style="display:inline-block;vertical-align:top;"  src="{{ site.baseurl }}/img/final_board.png" height="300" width="300"/>
+<img style="display:inline-block;vertical-align:top;"  src="{{ site.baseurl }}/img/posts/genetic_boggle/final_board.png" height="300" width="300"/>
 </p>
 
 <p align="center">
 Here is how the boards evolved over the generations:<br>
-<img style="display:inline-block;vertical-align:top;"  src="{{ site.baseurl }}/img/scores_over_generation.png" />
+<img style="display:inline-block;vertical-align:top;"  src="{{ site.baseurl }}/img/posts/genetic_boggle/scores_over_generation.png" />
 </p>
 
 <p align="center">
 And here are all of the generations:<br>
-<img style="display:inline-block;vertical-align:top;"  src="{{ site.baseurl }}/img/evolve_animation.gif" height="300" width="300"/>
+<img style="display:inline-block;vertical-align:top;"  src="{{ site.baseurl }}/img/posts/genetic_boggle/evolve_animation.gif" height="300" width="300"/>
 </p>  
 
 More solutions can be seen at the end of the [Oct. 28th Ridder](http://fivethirtyeight.com/features/rig-the-election-with-math/).
 
 ## References
-Header Image By <a rel="nofollow" class="external free" href="http://wellcomeimages.org/indexplus/obf_images/6c/d2/f0a4468f0181ae48d0e410beeb51.jpg">http://wellcomeimages.org/indexplus/obf_images/6c/d2/f0a4468f0181ae48d0e410beeb51.jpg</a> Gallery: <a rel="nofollow" class="external free" href="http://wellcomeimages.org/indexplus/image/L0020440.html">http://wellcomeimages.org/indexplus/image/L0020440.html</a>, <a href="http://creativecommons.org/licenses/by/4.0" title="Creative Commons Attribution 4.0">CC BY 4.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=35994175">Link</a>
-
 [^birdimg]: By <a href="//commons.wikimedia.org/w/index.php?title=User:Jmalvin17&amp;action=edit&amp;redlink=1" class="new" title="User:Jmalvin17 (page does not exist)">Jackie malvin</a> - <span class="int-own-work" lang="en">Own work</span>, <a href="http://creativecommons.org/licenses/by-sa/4.0" title="Creative Commons Attribution-Share Alike 4.0">CC BY-SA 4.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=40655181">Link</a>
 
 [^wikiga]:[https://en.wikipedia.org/wiki/Genetic_algorithm](https://en.wikipedia.org/wiki/Genetic_algorithm)

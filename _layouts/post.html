@@ -37,6 +37,10 @@ layout: default
 				{{ content }}
 
                 <hr>
+                {% if page.header-credit %}
+                <span class="header-credit">Header image by {{ page.header-credit}}</span>
+                <hr>
+                {% endif %}
 
                 <ul class="pager">
                     {% if page.previous.url %}

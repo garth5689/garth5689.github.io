@@ -3,8 +3,9 @@ layout:     post
 title:      Marquee Mix-Up
 date:       2016-10-13T08:00:00.000Z
 author:     Andrew
-header-img: img/Pencil_macro_2_kamranki.jpg
+header-img: img/posts/marquee_mixup/Pencil_macro_2_kamranki.jpg
 tags:       puzzles crosswords personal
+header-credit: "By Kamranki (Own work) CC BY-SA 4.0, via Wikimedia Commons"
 ---
 
 Hello everyone! Today I'm happy to present my second crossword creation.  After fielding ideas from the crowd and countless iterations, it's finally complete.
@@ -98,5 +99,3 @@ This time around, I didn't think everything was quite up to snuff to submit for 
 
 # Thanks
 Thanks to Nancy Salomon and Jeff Chen, two experienced constructors who gave me very helpful feedback.  Thanks to everyone who submitted words.  I'll try to squeeze them in future puzzles.
-
-Header Image By [Kamranki](//commons.wikimedia.org/wiki/User:Kamranki "User:Kamranki") - <span class="int-own-work" lang="en">Own work</span>, [CC BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0 "Creative Commons Attribution-Share Alike 4.0"), [Link](https://commons.wikimedia.org/w/index.php?curid=44110847)

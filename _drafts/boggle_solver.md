@@ -10,7 +10,9 @@ tags:       puzzles programming
 ## Background
 If you haven't read my [last post]({{ page.previous.url | prepend: site.baseurl | replace: '//', '/' }}), go ahead and read that before diving in here.  It's not strictly necessary, but it will give you some context.
 
-In my last post discussing Boggle board generation, I skipped over an important detail.  Because I wanted to keep my focus on the genetics aspect of the solution, I didn't go into details about actually scoring the boards.  A few people have asked me about the details, so I thought it'd be best to share.  If your recreational reading is solely focused on boggle board solving, there are many resources out there for you as well beyond this post[^blog1] [^blog2] [^blog3].  I won't be blazing any trails here, but it's still fun to explain.
+In my last post discussing Boggle board generation, I skipped over an important detail.  Because I wanted to keep my focus on the genetics aspect of the solution, I didn't go into details about actually scoring the boards.  A few people have asked me about the details, so I thought it'd be best to share.  If your recreational reading is solely focused on boggle board solving, there are
+<!--break-->
+many resources out there for you as well beyond this post[^blog1] [^blog2] [^blog3].  I won't be blazing any trails here, but it's still fun to explain.
 
 I'll re-iterate the rules of Boggle for everyone who may have forgotten them since we last talked.
 
