@@ -3,7 +3,7 @@ layout:     post
 title:      "Boggle Revisited: Solver"
 date:       2017-1-19 1:00:00
 author:     Andrew
-header-img: img/boggle_solver/the-maze.jpg
+header-img: img/posts/boggle_solver/the-maze.jpg
 tags:       puzzles programming
 ---
 
