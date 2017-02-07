@@ -7,3 +7,9 @@ header-img: img/posts/podcasts_feb_2017/mic_header.jpg
 header-credit: https://unsplash.com/@w18
 tags:       podcasts
 ---
+
+Memory Palace
+
+Reply All
+
+Mystery Show
