@@ -4,6 +4,7 @@ title:      "Boggle Solver"
 date:       2017-1-19 1:00:00
 author:     Andrew
 header-img: img/posts/boggle_solver/the-maze.jpg
+header-credit: "By Kamranki (Own work) CC BY-SA 4.0, via Wikimedia Commons"
 tags:       puzzles programming
 ---
 
@@ -25,15 +26,13 @@ Let's start by listing off criteria that our algorithm must meet:
 * Words must be three or more letters.
 
 #### Dictionary
-Let's start by talking about the dictionary.  In order to know if we have words, we need a dictionary to pull from.  In this case, I'll be using a public domain word list titled [enable1.txt](http://norvig.com/ngrams/enable1.txt).  It contains approximately 170,000 of the most commonly used words.  There's nothing particularly special about this list, it just happens to be very popular and public domain.
+Let's start by talking about the dictionary.  In order to know what qualifies as a word, we need a dictionary to pull from.  In this case, I'll be using a public domain word list titled [enable1.txt](http://norvig.com/ngrams/enable1.txt).  It contains approximately 170,000 of the most commonly used words.  There's nothing particularly special about this list, it just happens to be very popular and public domain.
 
 ## Searching The Grid
-Now we know what we're looking for, so let's start to search.
-
 ### Naive
 The most basic solution would be to traverse all possible paths through the grid, only stopping when there are no more available squares to move to.  Along the way, each string of letters would be checked to see if it's a word.  This approach would certainly be the the most thorough, but would also lead to countless unnecessary calculations.
 
-For example, say the search is four letters in, and the first four squares spell out "XKCD".  Using this naive strategy, the search would continue, looking for words starting with "XKCD".  Clearly, this is going to be fruitless, and the search could have been stopped earlier.  The naive search will spend a significant amount of time searching dead ends looking for words.
+For example, say the search is four letters in, and the first four squares spell out `XKCD`.  Using this naive strategy, the search would continue, looking for words starting with `XKCD`.  Clearly, this is going to be fruitless, and the search could have been stopped earlier.  The naive search will spend a significant amount of time searching dead ends looking for words.
 
 Additionally, this algorithm would also have to construct every possible traversal of the grid, which would take quite a long time.  Moving along a grid such as this, while not allowing for repeated stops at the same point is called a [self-avoiding walk](https://en.wikipedia.org/wiki/Self-avoiding_walk).  For smaller grids such as this, it's possible to enumerate all the paths, but a general formula doesn't exist for an arbitrary grid size.
 
@@ -42,33 +41,59 @@ It may make sense for us to trim our search down to not pursue dead ends, but ho
 
 While searching now, for each string that we have found, we'll check to see if there is a word that starts with that string.  If we have found a full word, we can add it to our list and keep going.  If there doesn't exist a word that starts with that string, stop searching that path and pick a new direction to search.
 
-### Search Smarter
-Now that we know we're going to be checking the dictionary frequently for prefixes, let's explore ways to make that lookup faster.  As an aside, think about how you might check a paper dictionary for the word `isopod`.  You would start at `i`, then move to `is`, etc.  If your dictionary didn't have any words that started with `isop`, you can conclude that your word is not in the dictionary.
-
-Our algorithm (so far) is searching for prefixes by starting at the top of the list and searching the entire thing.  Let's search like a human (because we already know how anyway).
-
-
 ## Data structures
-In order to make the most efficient search possible, we'll be transforming our dictionary into a an ordered tree called a [trie](https://en.wikipedia.org/wiki/Trie).  A trie is great for this application because as you travel down the nodes of the tree, you're constructing a word.  As you search, if the next letter in your word doesn't appear in the tree, you know that your word is not contained in the dictionary.
+### Search Smarter
+Now that we know we're going to be checking the dictionary frequently for prefixes, let's explore ways to make that lookup faster.
 
-An example may help here:
+Take a second to think about how you might check a paper dictionary for the word `isopod`.  You would start at `i`, then move to `is`, etc.  If your dictionary didn't have any words that started with `isop`, then you know that `isopod` is not in your dictionary.
 
-#### Trie
-One of the data structures best suited for this task is the [trie](https://en.wikipedia.org/wiki/Trie) .  A trie is an ordered tree structure that, as it is traversed, can efficiently know when a word is not contained in a potential list.  The trie is created by first creating a set of nodes that correspond to the first letters of all the words in the list.  Then, for each of those letters, a node is added for each second letter in the words starting with that original letter.  
+Our algorithm (so far) is searching for prefixes by starting at the top of the list and searching the entire thing.  This would be like running through every word looking for `isopod`.
 
-This allows the search for a word to proceed letter by letter, similar to how you would look up a word in the dictionary if someone was spelling the word to you.  As soon as you can't find the next letter, you know the word is not contained!
+In order to make the search more efficient, we'll be transforming our dictionary into an ordered tree called a [trie](https://en.wikipedia.org/wiki/Trie).  Our trie will be a tree where each node represents a string of letters.  The string is determined by adding together the letters from all the nodes that were traveled to arrive at the end.  This may be more intuitive with an example.
 
+Here is a trie representing the following words (bolded nodes represent the words):
+`a`, `about`, `above`, `across`, `act`, `active`, `activity`, `cake`, `call`, `can`, `candle`, `keep`,`key`, `kill`, `kin`, `kind` and `king`.
 
+![example_trie]({{ site.baseurl }}/img/posts/boggle_solver/example_trie.png)
 
+A trie is great for this application because as you travel down the nodes of the tree, you're constructing a word.  As you search, if the next letter in your word doesn't appear in the tree, you know that your word is not contained in the dictionary.
 
+For example if we search for `kin`, we can find it by moving first to the `k`, then the `i`, then the `n`.  Because we ended our search in the tree, `kin` is in our dictionary.
 
+![example_trie_1]({{ site.baseurl }}/img/posts/boggle_solver/example_trie_1.png)
+
+Similarly for `kind`, we have the following search.  Note however, that if we were to search for `kindly`, when we arrived at the `d` node, there would be no `l` node to travel to.  Right away, we know that `kindly` was not one of our original words.
+![example_trie_2]({{ site.baseurl }}/img/posts/boggle_solver/example_trie_2.png)
+
+<!--
+![example_trie_3]({{ site.baseurl }}/img/posts/boggle_solver/example_trie_3.png)
+-->
 
 # The Nitty Gritty
 
-#### Traversing the Grid
-For consistency, let's refer to the board on a coordinate system, with each square having an x and a y coordinate.  The origin will be in the top left, with x going horizontal and y being vertical.
+#### Constructing the trie
+The trie is constructed as a dict [^trie_python] in python.  At the top level, the keys are the first letters of all the words.  Inside each of those is another dict containing all the seconds letters of words that started with the first letter, etc.  Additionally, because we want to find words that are contained within other words, there is a special key (`END`) that signals that the string ending on that node is a word itself.  This makes sure that we both count that word, but also continue searching if it's also a prefix to further words.  Lastly, each node has a unique integer to aid in drawing the graphs later.
 
-Functionality will be needed to determine the neighbors of a particular square, to find the next squares in the grid to travel to.
+~~~ python
+def make_trie(words):
+    root = dict()
+    for word in words:
+        current_dict = root
+        for letter in word:
+            # as the letters get counted, traverse further into the dict
+            # if the key does not exist, it will be created.  Otherwise
+            # current_dict will just move deeper into the dictionary.
+            current_dict = current_dict.setdefault(letter, {})
+        # add the END key at the deepest node for this word
+        # to signal that this string is a word.
+        current_dict[END] = END
+    return root
+~~~
+
+#### Traversing the Grid
+For consistency, I'll lay out the board on a coordinate system, with each square having an x and a y coordinate.  The origin will be in the top left, with x going horizontal and y being vertical.
+
+To traverse the grid, you'll need to know which coordinates are legal targets.  This function will determine those legal targets.  This function does not however, stop you from revisiting squares, that is handled elsewhere.
 
 ~~~ python
 def neighbors(x, y):
@@ -96,44 +121,26 @@ def neighbors(x, y):
             yield (nx, ny)
 ~~~
 
-
-#### Constructing the trie
-The trie is constructed as a dict [^trie_python].  At the top level, the keys are the first letters of all the words.  Inside each of those is another dict containing all the seconds letters of words that started with the first letter.  Additionally, because we want to find words that are contained within other words, there is a special key that signals that the string ending on that node is a word itself.  This makes sure that we both count that word, but also continue searching if it's also a prefix to further words.
-
-~~~ python
-def make_trie(words):
-    root = dict()
-    for word in words:
-        current_dict = root
-        for letter in word:
-            # as the letters get counted, traverse further into the dict
-            # if the key does not exist, it will be created.  Otherwise
-            # current_dict will just move deeper into the dictionary.
-            current_dict = current_dict.setdefault(letter, {})
-        # add the END key at the deepest node for this word
-        # to signal that this string is a word.
-        current_dict[END] = END
-    return root
-~~~
-
-
 #### Searching the trie
+Once there is a candidate word, we need to check the trie to determine if it's a word, a valid prefix to other words, or not a word (invalid).  This function attempts to keep going deeper into the trie with each letter, until either:
+
+
+1. The search can't find the next letter `invalid`
+2. All letters are found.  Then either:
+    1. END is present `word`
+    2. If not `prefix`
+
+
 ~~~ python
 class TrieMembership(IntEnum):
     invalid = 1
     prefix = 2
     word = 3
 
-# This is a cache of all the lookups so far, to speed up repeated queries to the trie.
-TRIE_MEMBERS = dict()
-
 
 def trie_member(trie, word):
-    # try to fetch the membership from the list in memory first.
-    try:
-        return TRIE_MEMBERS[word]
 
-    # if the word has not been tested already, calculate whether the string
+    # Calculate whether the string
     # is not a valid word/prefix, whether it is a prefix to possible words
     # or a word itself.
     except KeyError:
@@ -158,6 +165,7 @@ def trie_member(trie, word):
 ~~~
 
 #### Traversing the grid
+This is where the magic happens.  Through the power of [recursion](https://en.wikipedia.org/wiki/Recursion_(computer_science)), this function traverses the grid, recording words it finds along the way.
 ~~~ python
 def recurse_grid_internal(grid, path, current_word, words_trie, found_words):
     # path should be empty on the initial call
@@ -213,6 +221,8 @@ def recurse_grid_internal(grid, path, current_word, words_trie, found_words):
                         yield (next_path, next_word)
 ~~~
 
+This is how the actual score is tallied up.  Each word is turned into a number based on it's length and they are summed up.  It's really not as interesting as the other stuff.  IN this snippet, you can see the initial call to `recurse_grid_internal`.  In the first call, we must provide empty containers for the function to fill with words and such.
+
 ~~~ python
 LEN_TO_SCORE = {3: 1,
                 4: 1,
@@ -238,38 +248,3 @@ for word in recurse_grid_internal(grid, list(), "", trie, set())):
 [^blog1]:[How to find list of possible words from a letter matrix [Boggle Solver]](http://stackoverflow.com/questions/746082/how-to-find-list-of-possible-words-from-a-letter-matrix-boggle-solver)
 [^blog2]: [Solving the Boggle Game - Recursion, Prefix Tree, and Dynamic Programming](http://exceptional-code.blogspot.com/2012/02/solving-boggle-game-recursion-prefix.html)
 [^blog3]: [Solving Boggle boards at scale](https://blog.niallconnaughton.com/2015/12/10/solving-boggle-boards-at-scale/)
-
-0	:(6,	8),
-1	:(5,	3),
-2	:(5	,11),
-3	:(4,	1),
-4	:(4,	4),
-5	:(4,	7),
-6	:(4	,10),
-7	:(4	,13),
-8	:(4	,15),
-9	:(3,	0),
-10:(	3,	1),
-11:(	3,	3),
-12:(	3,	4),
-13:(	3,	5),
-14:(	3,	6),
-15:(	3,	7),
-16:(	3,	8),
-17:(	3,	9),
-18:(	3	,10),
-19:(	3	,11),
-20:(	3	,12),
-21:(	3	,13),
-22:(	3	,13),
-23:(	3	,14),
-24:(	2,	2),
-25:(	2,	3),
-26:(	2,	4),
-27:(	2,	7),
-28:(	2	,10),
-29:(	2	,13),
-30:(	2	,14),
-31:(	2	,15),
-32:(	1,	7),
-33:(	0,	7),

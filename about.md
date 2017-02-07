@@ -7,6 +7,10 @@ header-img: "img/about/about-bg.jpg"
 header-credit: "https://unsplash.com/@fineas_anton"
 ---
 
+
+
+<img class="rounded" alt="" vspace="10" hspace="10" style="float:right"  src="{{ site.baseurl }}/img/about/headshot.resized.jpg"/>
+
 #### Who are you?
 My name is Andrew and I'm a software developer, among other things.  I'm a controls software developer by day and hobbyist developer by night.  I graduated from the University of Illinois in 2011 in Mechanical Engineering (didn't catch the CS bug until it was too late).  Originally from the Chicago suburbs, I've now lived in several places across the Midwest.
 
