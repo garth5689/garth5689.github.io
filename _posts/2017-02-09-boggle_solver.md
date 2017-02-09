@@ -27,6 +27,7 @@ And an example board:
 **Our goal is to most efficiently find all the words of a given dictionary contained in a given grid of letters.**
 
 Let's start by listing off criteria that our algorithm must meet:
+
 * Words can start on any square.
 * The next letter in a word can be orthogonal or diagonal to the current letter.
 * A single letter cannot be used more than once in a word.
@@ -37,6 +38,7 @@ Let's start by listing off criteria that our algorithm must meet:
 In order to know what qualifies as a word, we need a dictionary to pull from.  In this case, I'll be using a public domain word list [enable1.txt](http://norvig.com/ngrams/enable1.txt).  It contains approximately 170,000 of the most commonly used words.  There's nothing particularly special about this list, it just happens to be popular for this type of puzzle and public domain.
 
 ## Searching The Grid
+
 ### Naive
 The most basic solution is to traverse all possible paths through the grid, only stopping when there are no more available squares to move to.  Along the way, each string of letters would be checked to see if it's a word.  This approach would certainly be the the most thorough, but would also lead to countless unnecessary calculations.
 
@@ -77,9 +79,11 @@ Similarly for `kind`, we have the following search.  Note however, that if we we
 
 ## Putting it Together
 Here is an animated example showing a grid being searched for our example dictionary words.  The trie animation is color coded to help follow it.  Keep in mind, we're only searching for a select few words in this example.
+
 * red: the current word is not in the dictionary
 * yellow: there are still words that start with that string
 * green: we've found a word!
+
 <p align="center">
 <img style="display:inline-block;vertical-align:top;"  src="{{ site.baseurl }}/img/posts/boggle_solver/example_trie_animation.gif" />
 </p>
@@ -89,6 +93,7 @@ This neatly summarizes the entire process including the compact trie structure f
 # The Nitty Gritty
 This is a selection of the important parts of code to perform the search.  The full files can be found at:
 [recurse_grid.pyx](https://github.com/andrewzwicky/puzzles/blob/master/FiveThirtyEightRiddler/2016-10-21/recurse_grid.pyx) and [boggle.py](https://github.com/andrewzwicky/puzzles/blob/master/FiveThirtyEightRiddler/2016-10-21/boggle.py).
+
 ### Constructing the Trie
 The trie is constructed as a dict [^trie_python] in python.  At the top level, the keys are the first letters of all the words.  Inside each of those is another dict containing all the seconds letters of words that started with the first letter, etc.  Additionally, because we want to find words that are contained within other words, there is a special key (`END`) that signals that the string ending on that node is a word itself.  This makes sure that we both count that word, but also continue searching if it's also a prefix to further words.  Lastly, each node has a unique integer to aid in drawing the graphs later.
 
