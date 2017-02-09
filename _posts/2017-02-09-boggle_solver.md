@@ -211,7 +211,7 @@ def neighbors(x, y):
 ~~~
 
 ### Recursive Searching
-This is where the magic happens.  Through the power of [recursion](https://en.wikipedia.org/wiki/Recursion_(computer_science)), this function traverses the grid, recording words it finds along the way.  The function maintains a list of found `path`, `word` pairs and spits them out as the search goes.
+This is where the magic happens.  Through the power of [recursion](https://en.wikipedia.org/wiki/Recursion_(computer_science)) and [backtracking](https://en.wikipedia.org/wiki/Backtracking), this function traverses the grid, recording words it finds along the way.  The function maintains a list of found `path`, `word` pairs and spits them out as the search goes.
 
 ~~~ python
 def recurse_grid(grid, path, current_word, words_trie, found_words):
