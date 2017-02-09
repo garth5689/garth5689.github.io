@@ -10,7 +10,7 @@ tags:       puzzles programming
 
 If you haven't read my [last post]({{ page.previous.url | prepend: site.baseurl | replace: '//', '/' }}), go ahead and read that before diving in here.  It's not strictly necessary, but it will give you some context.
 
-In my last post discussing high scoring Boggle boards, I skipped over some important details.  Because I wanted to keep my focus on the genetics aspect of the solution, I didn't walk through actually scoring the boards.  A few people have asked me about the details, so I thought it'd be fun to share that as well.  If your recreational reading is solely focused on boggle board solving, there are
+In my last post discussing high scoring Boggle boards, I skipped over some important details.  Because I wanted to keep my focus on the genetics aspect of the solution, I didn't walk through actually scoring the boards.  A few people have asked me about the details, so I thought it'd be fun to share that as well.  If your recreational reading is solely focused on Boggle board solving, there are
 <!--break-->
 many resources out there for you as well beyond this post[^blog1] [^blog2] [^blog3], and I won't be blazing any new trails here.
 
@@ -28,23 +28,23 @@ And an example board:
 
 Let's start by listing off criteria that our algorithm must meet:
 
-* Words can start on any square.
+* Words can start on any letter.
 * The next letter in a word can be orthogonal or diagonal to the current letter.
 * A single letter cannot be used more than once in a word.
 * Words must be three or more letters.
 
 
 ### Dictionary
-In order to know what qualifies as a word, we need a dictionary to pull from.  In this case, I'll be using a public domain word list [enable1.txt](http://norvig.com/ngrams/enable1.txt).  It contains approximately 170,000 of the most commonly used words.  There's nothing particularly special about this list, it just happens to be popular for this type of puzzle and public domain.
+In order to know what qualifies as a word, we need a dictionary to pull from.  In this case, I'll be using the public domain word list [enable1.txt](http://norvig.com/ngrams/enable1.txt).  It contains approximately 170,000 of the most commonly used words.  There's nothing special about this list, it just happens to be popular for this type of puzzle and public domain.
 
 ## Searching The Grid
 
 ### Naive
 The most basic solution is to traverse all possible paths through the grid, only stopping when there are no more available squares to move to.  Along the way, each string of letters would be checked to see if it's a word.  This approach would certainly be the the most thorough, but would also lead to countless unnecessary calculations.
 
-For example, say the first four letters of a search path spell out `XKCD`.  Using this naive strategy, the search would continue, checking for words starting with `XKCD`.  Because there are no words in our dictionary starting with `XKCD`, this is going to be fruitless, and that particular search path could have been stopped already.  The naive search will spend a significant amount of time searching paths that can be eliminated as  dead ends.
+For example, say the first four letters of a search path spell out `XKCD`.  Using this naive strategy, the search would continue, checking for all possible words in the grid starting with `XKCD`.  Because there are no words in our dictionary starting with `XKCD`, this is going to be fruitless, and that particular search path could have been stopped already.  The naive search will spend a significant amount of time searching paths that can be eliminated as dead ends.
 
-Additionally, this algorithm would also have to construct every possible traversal of the grid, which would take quite a long time.  Moving along a grid such as this, while not allowing for repeated stops at the same point is called a [self-avoiding walk](https://en.wikipedia.org/wiki/Self-avoiding_walk).  For smaller grids such as this, it's possible to enumerate all the paths, but a general formula doesn't exist for an arbitrary grid size.  (This enumeration would look similar to  [this](https://www.youtube.com/watch?v=JssXUFBPvh0) if you're wondering.)
+Additionally, this algorithm would construct every possible traversal of the grid, which would take quite a long time.  Moving along a grid such as this, while not allowing for repeated stops at the same point is called a [self-avoiding walk](https://en.wikipedia.org/wiki/Self-avoiding_walk).  For smaller grids such as this, it's possible to enumerate all the paths, but a general formula doesn't exist for an arbitrary grid size.  (This enumeration would look similar to  [this](https://www.youtube.com/watch?v=JssXUFBPvh0) if you're wondering.)
 
 ### Be More Selective
 It makes sense for us to trim our search down to not pursue dead ends, but how?  As the search progresses, we'll check to see if the current string is a word, or there are any words in our list that *starts* with the string.  If there doesn't exist a word that starts with the string, stop searching that path and pick a new direction to search.
@@ -52,7 +52,7 @@ It makes sense for us to trim our search down to not pursue dead ends, but how? 
 ### Smarter Lookups
 Now that we know we're going to be checking the dictionary frequently for prefixes, let's explore ways to make that lookup faster.
 
-Take a second to think about how you might check a dead tree dictionary for the word `isopod`.  You would start at `i`, then move to `is`, etc.  If your dictionary didn't have any words that started with `isop`, then you know that `isopod` is not in your dictionary.
+Take a second to think about how you might check a dead tree dictionary for the word `isopod`.  You would start at `i`, then move to `is`, etc.  If your dictionary didn't have any words that started with `isop`, then you know that `isopod` is not in your dictionary, and no further searching is needed.
 
 Our algorithm (so far) is searching for prefixes by starting at the top of the list and searching the entire thing.  This would equivalent to reading through every word in the dictionary looking for `isopod`.  Probably not the best strategy.
 
@@ -152,10 +152,6 @@ class TrieMembership(IntEnum):
 
 
 def trie_member(trie, word):
-    # try to fetch the membership from the list in memory first.
-    try:
-        return TRIE_MEMBERS[word]
-
     # if the word has not been tested already, calculate whether the string
     # is not a valid word/prefix, whether it is a prefix to possible words
     # or a word itself.
@@ -167,24 +163,20 @@ def trie_member(trie, word):
                 current_dict = current_dict[letter]
             except KeyError:
                 # once a key is not found, this means this word is not in the trie
-                TRIE_MEMBERS[word] = TrieMembership.invalid
-                return TRIE_MEMBERS[word]
+                return TrieMembership.invalid
         if END in current_dict:
             # If END is found, this string is a full word in our original dictionary
-            TRIE_MEMBERS[word] = TrieMembership.word
-            return TRIE_MEMBERS[word]
+            return TrieMembership.word
         else:
             # If all letters are still in the trie, but this is not a full word,
             # it means there are words that start with this string.
-            TRIE_MEMBERS[word] = TrieMembership.prefix
-            return TRIE_MEMBERS[word]
+            return TrieMembership.prefix
 ~~~
 
 ## Traversing the Grid
-For consistency, each square will have and x and a y coordinate.  The origin will be in the top left, with x going horizontal and y being vertical.
 
 ### Friendly Neighbors
-To traverse the grid, you'll need to know which coordinates are legal targets.  This function will determine those legal targets.  This function does not however, stop you from revisiting squares, that is handled elsewhere.
+For consistency, each square will have and x and a y coordinate.  The origin will be in the top left, with x going horizontal and y being vertical.  To traverse the grid, you'll need to know which coordinates are legal targets.  This function will determine those legal targets.  This function does not however, stop you from revisiting squares, that is handled elsewhere.
 
 ~~~ python
 def neighbors(x, y):
