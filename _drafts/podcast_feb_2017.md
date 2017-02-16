@@ -12,15 +12,21 @@ Hey everyone, this time I wanted to take a little diversion from the usual heavy
 
 #the memory palace
 #### [http://thememorypalace.us/](http://thememorypalace.us/)
+https://static1.squarespace.com/static/57f5390f5016e1da21c4bbdf/582a29c215d5dbb8582d3d2d/585842ce9f7456737a53005f/1482179278848/showcard_memory.jpg
+
+the memory palace is one show I always have a tough time explaining, much less relaying what makes it great.  The show's host, Nat DiMeo, take historical stories and embelishes them.  What starts out as a footnote in history is unraveled into a rich, personal tale.  
 
 Here are Nate's picks for great episodes to start with.
 
 http://thememorypalace.us/where-do-i-start/
 
-and they danced
-floating orbs
+http://thememorypalace.us/2013/07/o-how-we-danced/
+http://thememorypalace.us/2014/06/the-glowing-orbs/
+
 
 #Reply All
+https://en.wikipedia.org/wiki/Reply_All_(podcast)#/media/File:Reply_All_(Podcast)_Logo.jpg
+
 
 https://gimletmedia.com/reply-all/
 
@@ -35,7 +41,7 @@ Shine on you Crazy Goldman and Boy in Photo are both good.
 
 
 #Mystery Show
-
+https://en.wikipedia.org/wiki/Mystery_Show#/media/File:Mystery-Logo.jpg
 https://gimletmedia.com/show/mystery-show/
 
 Belt Buckle
