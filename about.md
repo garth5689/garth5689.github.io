@@ -7,8 +7,6 @@ header-img: "img/about/about-bg.jpg"
 header-credit: "https://unsplash.com/@fineas_anton"
 ---
 
-
-
 <img class="rounded" alt="" vspace="10" hspace="10" style="float:right"  src="{{ site.baseurl }}/img/about/headshot.resized.jpg"/>
 
 #### Who are you?
@@ -17,7 +15,3 @@ My name is Andrew and I'm a software developer, among other things.  I'm a contr
 
 #### Why this blog?
 This blog is a place for me to share the latest things that have caught my interest.  Primarily, this will be programming ideas and approachs.  Ideally, I can explore these with a relatable puzzle or axample.  By applying them to interesting topics, I hope to share my enjoyment of programming with a wider audience.  I aim for my writing to be concise and relatable for developers and non-developers alike.  Additionally, documentation for my side-projects will live here as well.
-
-
-#### What about non-programming stuff?
-Absolutely!  Outside of progamming, I really enjoy listening to podcasts and reading.
