@@ -7,4 +7,4 @@ header-img: "img/projects/drafting.jpg"
 header-credit: "https://unsplash.com/@szolkin"
 ---
 
-test
+coming soon
