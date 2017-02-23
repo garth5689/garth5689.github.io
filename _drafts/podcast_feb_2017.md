@@ -20,6 +20,8 @@ the memory palace is one show I always have a tough time explaining, much less r
 
 Here are Nate's picks for great episodes to start with.
 
+
+
 http://thememorypalace.us/where-do-i-start/
 
 http://thememorypalace.us/2013/07/o-how-we-danced/
@@ -31,6 +33,11 @@ http://thememorypalace.us/2014/06/the-glowing-orbs/
 #Reply All
 https://en.wikipedia.org/wiki/Reply_All_(podcast)#/media/File:Reply_All_(Podcast)_Logo.jpg
 
+Replay All is a show about the internet.
+
+Reply All also features one of my favorites segments, called Yes Yes No.  Yes Yes No is where the founder/CEO of Gimlet, Alex Blumburg brings PJ & Alex items from the internet (usually a twee) that he doesn't understand.  Typically the segment starts with each of the three saying whether they understand the tweet, resulting in Yes Yes & No responses.  The amount of exposition dumb internet memes can warrant is hilarious.
+
+http://yesyesnos.tumblr.com/
 
 https://gimletmedia.com/reply-all/
 
@@ -47,6 +54,8 @@ Shine on you Crazy Goldman and Boy in Photo are both good.
 #Mystery Show
 https://en.wikipedia.org/wiki/Mystery_Show#/media/File:Mystery-Logo.jpg
 https://gimletmedia.com/show/mystery-show/
+
+Mystery Show is a podcast built on a simple premise with great execution and a stellar host.  On each episode Starlee Kine & her team set out to solve a personal mystery plauging a friend or listener.  Who knew simple questions like "Who did this belt buckle belong to?" or "How tall is Jake Gylenhall?" could generate such captivating stories?  T
 
 Belt Buckle
 Britney
