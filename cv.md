@@ -7,4 +7,7 @@ header-img: "img/cv/books.jpg"
 header-credit: "https://unsplash.com/@impatrickt"
 ---
 
-coming soon
+## Work
+
+## Education
+University of Illinois
