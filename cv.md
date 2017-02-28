@@ -8,6 +8,11 @@ header-credit: "https://unsplash.com/@impatrickt"
 ---
 
 ## Work
+John Deere
+
+Cummins, Inc.
+
+## Skills
 
 ## Education
 University of Illinois
