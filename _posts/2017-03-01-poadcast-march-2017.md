@@ -8,9 +8,9 @@ header-credit: https://unsplash.com/@w18
 tags:       podcasts
 ---
 
-Hello again everyone!  This time, I'll take a break from programming and tell you about another of my favorite things: podcasts.  Podcasts are audio-only programs, spanning all types of genres.  They are typically released on a regular schedule and free (mostly ad supported) and there's something out there for everyone!  If you want to read more about them, wikipedia has your back, as always: [podcast](https://en.wikipedia.org/wiki/Podcast)
+Hello again everyone!  This time, I'll take a break from programming and tell you about another of my favorite things: podcasts.  Podcasts are audio-only programs, spanning all types of genres.  They are typically released on a regular schedule and free (mostly ad supported) and there's something out there for everyone!  If you want to read more about them, wikipedia has your back, as always: [podcast](https://en.wikipedia.org/wiki/Podcast).  If you're new and unsure how to listen, check out this [helpful guide!](https://serialpodcast.org/how-to-listen)
 
-In this post I'm going to share three of my favorite shows, hopefully some that you don't listen to already.  For those who are familiar with podcasts, I've tried to stay away from some of the very popular shows like [This American Life](https://www.thisamericanlife.org/) & [Radiolab](http://www.radiolab.org/).  If you have never listened to podcasts before, both of those shows are definitely worth checking out as well.  Without further ado...
+In this post I'm going to share three of my favorite shows, hopefully some that you don't listen to already.  For those who are familiar with podcasts, I've tried to stay away from some of the very popular shows like [This American Life](https://www.thisamericanlife.org/), [Radiolab](http://www.radiolab.org/) or [Serial](https://serialpodcast.org/).  If you have never listened to podcasts before, both of those shows are definitely worth checking out as well.  Without further ado...
 
 
 <!--break-->
