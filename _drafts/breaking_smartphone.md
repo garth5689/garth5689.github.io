@@ -3,12 +3,21 @@ layout:     post
 title:      "Breaking Smartphone Habits"
 date:       2017-3-10 12:00:00
 author:     Andrew
-header-img: img/posts/pyd2l/keyboard_header.jpg
-header-credit: https://unsplash.com/@otenteko
-tags:       personal
+header-img: img/posts/breaking_smartphone/gilles-lambert-8649.jpg
+header-credit: https://unsplash.com/@gilleslambert
+tags:       personal technology
 ---
 
-https://news.ycombinator.com/item?id=13829475
+
+
+> I think working with computers breeds a sort of contempt for them and you start looking for alternatives. -iamatworknow
+
+
+http://www.thememo.com/2017/03/09/how-i-kicked-my-smartphone-habit-and-never-looked-back/
+https://www.washingtonpost.com/news/inspired-life/wp/2015/06/10/a-six-step-program-for-breaking-your-smartphone-addiction/
+http://www.artofmanliness.com/2016/02/22/break-smartphone-habit/
+http://fieldguide.gizmodo.com/how-to-break-your-smartphone-addiction-1595290636
+
 
 Friday (3/10):
 Deleted reddit, facebook, imgur, feedly
