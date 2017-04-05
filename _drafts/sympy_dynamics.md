@@ -37,6 +37,10 @@ The motion of a double pendulum is chaotic, governed by some ordinary differenti
 
 In this system, there are two degrees of freedom, the two angles of the pendulum.  With these two angles, and the constants that define the links, the state of the system can be fully described.  The motion is constrained to the x-y plane.
 
+To arrive at a set of equations that we can actually use, we'll be using the Lagrangian.
+
+> In each case, a mathematical function called the Lagrangian is a function of the generalized coordinates, their time derivatives, and time, and contains the information about the dynamics of the system.
+
 TODO: Add mg to diagram, highlight angles as the DOF
 
 EXPLORE: adding springs, etc. for demo purposes.
