@@ -10,7 +10,7 @@ tags:       programming dynamics sympy python
 
 The next project I'm going to tackle involves quite a few moving parts, so I'm going to tackle them in a few different posts.  This will also serve as the introduction for what I'm shooting for as a finished project.
 
-#### My goal is to have my raspberry pi able to balance an inverted pendulum based on feedback from my web camera.
+#### My goal is to have my raspberry pi able to balance an inverted double pendulum based on feedback from my web camera.
 
 pictures are always helpful:
 
@@ -27,6 +27,20 @@ There's many components to this, so I'll start by separating the problem into ch
             * training
             * dynamics modeling
 
-To start, I'm going to create a plant model on my computer that I can use to test any potential controls strategies on.
+To start, I'm going to create a plant model on my computer that I can use to test any potential controls strategies on.  When I'm testing out different strategies, it will be very beneficial to be able to restart them quickly and test many iterations rapidly.
 
-The system I'm interested in is a double pendulum, with a torque applied at the base.
+To do this, I'll create a model on my computer that simulates the motor input, and processing delays from the webcam and then predicts the physical systems response.
+
+The system in question here is an inverted double pendulum, with a torque applied at the base and a free pivot in the center.  Balancing of pendulua is a very well studied area, so there's tons of information about double pendulums on the internet.
+
+The motion of a double pendulum is chaotic, governed by some ordinary differential equations.  In practice, this means that we can't get explicit equations for the motion of the two links, but we can calculate the paths of the links numerically.
+
+In this system, there are two degrees of freedom, the two angles of the pendulum.  With these two angles, and the constants that define the links, the state of the system can be fully described.  The motion is constrained to the x-y plane.
+
+TODO: Add mg to diagram, highlight angles as the DOF
+
+EXPLORE: adding springs, etc. for demo purposes.
+
+$$ \begin{align} A & = B \\ & = C \end{align} $$
+
+https://en.wikipedia.org/wiki/Double_pendulum
