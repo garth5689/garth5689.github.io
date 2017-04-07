@@ -283,7 +283,7 @@ def add_braces(ax, text, x0, y0, x1, y1, y2):
 y = np.row_stack(list(zip(*rolling)))  
 percent = y /  y.sum(axis=0).astype(float) * 100 
 
-fig, ax = plt.subplots(1)
+fig, ax = plt.subplots(1, facecolor='white')
 ax.stackplot(rolling_dates, percent)
 ax.legend(food_categories,bbox_to_anchor=(1.28, .5))
 ax.xaxis.set_major_locator(months)
