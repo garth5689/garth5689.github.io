@@ -2,3 +2,4 @@ syntax: glob
 _site/**
 .jekyll-metadata
 .sass-cache/**
+**/.ipynb_checkpoints/**

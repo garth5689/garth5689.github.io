@@ -17,6 +17,8 @@ The double pendulum is a very thoroughly studied mechanical system for several r
 2. There's some interesting math behind it as well, and the equations of motion are not easily calculated
 3.  Does all this while being fairly simple.
 
+<!--break-->
+
 The first thing I did was to label all my variables:
 
 ![diagram]({{ site.baseurl }}/img/posts/sympy_dynamics/simple_double_diagram.png)
@@ -43,7 +45,7 @@ init_printing(latex_printer=vlatex, latex_mode='equation')
 ```python
 def disp(expr):
     display(Math(vlatex(simplify(expr))))
-    
+
 def disp_eq(lhs,expr):
     display(Math("$${0} = {1}$$".format(lhs, vlatex(simplify(expr)))))
 ```
@@ -75,7 +77,7 @@ x_0=& r_{0} \cos{\left (\theta_0 \right )} & \\
 y_0=& r_{0} \sin{\left (\theta_0 \right )} & \\
 x_1=& l_{0} \cos{\left (\theta_0 \right )} + r_{1} \cos{\left (\theta_0 + \theta_1 \right )} & \\
 y_1=& l_{0} \sin{\left (\theta_0 \right )} + r_{1} \sin{\left (\theta_0 + \theta_1 \right )} & \\
-\end{align} 
+\end{align}
 $$
 
 
@@ -1969,5 +1971,3 @@ Jal0b28AAAAdZGF0YQAAAAEAAAAATGF2ZjU3LjQxLjEwMA==
 ">
   Your browser does not support the video tag.
 </video>
-
-

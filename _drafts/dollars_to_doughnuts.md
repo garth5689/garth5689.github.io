@@ -4,12 +4,12 @@ title:      "Dollars to doughnuts"
 subtitle: "analyzing my food spending"
 date:       2017-04-06 12:00:00
 author:     Andrew
-header-img: img/posts/sympy_dynamics/balance_rock.jpg
-header-credit: https://unsplash.com/@nbmat
+header-img: img/posts/food_spending/peppers_bg.jpg
+header-credit: https://unsplash.com/@mobography
 tags:       programming dynamics sympy python
 ---
 
-This is a quick post to share something that I was planning on doing otherwise, but thought others might find it interesting at best and slightly amusing at worst.
+This is a quick post to share something that I was planning on doing otherwise, but thought others might find it interesting at best and slightly amusing at worst.  today.
 
 Everyone's always looking to find a place to save a few dimes, and over the past few months I've really started to take notice of my food spending.  After examining the last few months worth of budgets (I use mint to track my expenses and categorize them), I decided to make a concerted effort to eat out less, cook more and bring my lunch to work to reduce spending.
 
@@ -21,13 +21,15 @@ Fine print:
 * I didn't remove anomolies, like covering a meal for a group and getting paid in cash
 * Some restaurants show up in Alcohol & Bars
 
-I'm going to be using my programming language of choice, python for this task.
 
+I'm going to be using my programming language of choice, python for this task.
+<!--break-->
 
 ```python
 import csv
 import numpy as np
 from matplotlib import pyplot as plt
+from matplotlib import cm
 import matplotlib.dates as mdates
 import matplotlib as mpl
 from collections import namedtuple
@@ -72,7 +74,7 @@ The first step is to make the data a bit more usable, starting with removing the
 transactions = transactions[1:]
 ```
 
-Right now, all the data is being stored as strings, which makes it difficult to do any kind of sorting or math.  A `tuple` is a sequence of items, so I'm creating a tuple that has three named attributes, `date`, `amnt`, and `cat`.  This means we can access the data by name instead of index.
+Right now, all the data is being stored as strings, which makes it difficult to do any kind of sorting or math.  A `tuple` is a sequence of items, so I'm creating a tuple that has three named attributes, `date`, `amount`, and `category`.  This means we can access the data by name instead of index.
 
 `datetime.strptime` turns a string into an actual date object in python, and I'll be storing the amount as a `Decimal`.  Category remains a string
 
@@ -113,7 +115,7 @@ Next, let's trim our date range down to something recent.  I'll go from last Oct
 
 
 ```python
-transactions = list(dropwhile(lambda trans: trans.date < datetime(day=1, month=10, year=2016), transactions))
+transactions = list(filter(lambda trans: trans.date >= datetime(day=1, month=10, year=2016), transactions))
 ```
 
 Now our data looks something like this:
@@ -171,7 +173,7 @@ plt.show()
 ```
 
 
-![png](dollars_to_doughnuts_files/dollars_to_doughnuts_22_0.png)
+![png]({{ site.baseurl }}/img/posts/food_spending/dollars_to_doughnuts_files/dollars_to_doughnuts_23_0.png)
 
 
 The data looks plausible, but it's not particularly revealing.  With this fine of detail, it's hard to see any clear trends.  Let's try a [moving average](https://en.wikipedia.org/wiki/Moving_average) to see if that reveals any trends.
@@ -182,14 +184,14 @@ For the overall spending, let's see what a 15 day moving average looks like.
 
 
 ```python
-n = 30
+time_frame = 30
 
 # index will be the date that we'll use to loop through our data
 # it starts n days from the beginning, which the first day that we
 # have enough data to average
 start = dates[0]
 end = dates[-1]
-index = start + timedelta(days = n-1)
+index = start + timedelta(days = time_frame-1)
 
 rolling = []
 rolling_dates = []
@@ -200,11 +202,12 @@ while index <= end:
     rolled_transactions = filter(lambda trans: start <= trans.date <= index, transactions)
     
     # add that average to our result list
-    rolling.append(sum([trans.amount for trans in rolled_transactions])/n)
+    rolling.append(sum([trans.amount for trans in rolled_transactions])/time_frame)
     
     # we're also keeping track of the dates for plotting later
     rolling_dates.append(index)
     
+    #move both of our indices
     index = index + timedelta(days = 1)
     start = start + timedelta(days = 1)    
 ```
@@ -212,19 +215,19 @@ while index <= end:
 
 ```python
 fig, ax = plt.subplots(1)
-ax.plot(rolling_dates,rolling)
+ax.plot(rolling_dates,rolling,'k')
 ax.xaxis.set_major_locator(months)
 ax.xaxis.set_major_formatter(monthFmt)
 ax.xaxis.set_minor_locator(days)
 fig.autofmt_xdate()
-plt.ylabel("food spending [$]")
+plt.ylabel("average daily food spending [$]")
 ax.set_xlim([rolling_dates[0],rolling_dates[-1]])
 ax.set_ylim(0)
 plt.show()
 ```
 
 
-![png](dollars_to_doughnuts_files/dollars_to_doughnuts_25_0.png)
+![png]({{ site.baseurl }}/img/posts/food_spending/dollars_to_doughnuts_files/dollars_to_doughnuts_26_0.png)
 
 
 Nothing absolutely definitive, but it does look like my effort to re-reign in my spending on food is having an effect.  From this, it's clear how Jan. and Feb. had relatively high spending compared to late last year.
@@ -233,11 +236,11 @@ However, I'm also interested in whether my intentions to get take-out and eat lu
 
 
 ```python
-n = 30
+time_frame = 30
 
 start = dates[0]
 end = dates[-1]
-index = start + timedelta(days = n)
+index = start + timedelta(days = time_frame-1)
 
 rolling = []
 rolling_dates = []
@@ -249,7 +252,7 @@ while index <= end:
     
     stack = {}
     for cat,cat_trans in groupby(rolled_transactions, lambda trans: trans.category):
-        stack[cat] = sum([trans.amount for trans in cat_trans])/n
+        stack[cat] = sum([trans.amount for trans in cat_trans])/time_frame
         
     rolling.append([float(stack[cat]) if cat in stack else float(0) for cat in food_categories])
     rolling_dates.append(index)
@@ -283,16 +286,25 @@ def add_braces(ax, text, x0, y0, x1, y1, y2):
 y = np.row_stack(list(zip(*rolling)))  
 percent = y /  y.sum(axis=0).astype(float) * 100 
 
-fig, ax = plt.subplots(1, facecolor='white')
-ax.stackplot(rolling_dates, percent)
-ax.legend(food_categories,bbox_to_anchor=(1.28, .5))
-ax.xaxis.set_major_locator(months)
-ax.xaxis.set_major_formatter(monthFmt)
-ax.xaxis.set_minor_locator(days)
-fig.autofmt_xdate()
-plt.ylabel("percentage of total food spending [%]")
+fig, (ax2, ax) = plt.subplots(2, facecolor='white', sharex=True, figsize=(12,16))
+plt.tight_layout(pad=0, w_pad=0.5, h_pad=0)
+k = ax.stackplot(rolling_dates, percent)
+handles, labels = ax.get_legend_handles_labels()
+ax.legend(handles = k[::-1], labels = food_categories[::-1], prop={'size':10}, loc=2)
+ax.set_ylabel("percentage of total food spending [%]")
 ax.set_xlim([rolling_dates[0],rolling_dates[-1]])
 ax.set_ylim([0,100])
+
+k = ax2.stackplot(rolling_dates, y)
+handles, labels = ax2.get_legend_handles_labels()
+ax2.legend(handles = k[::-1], labels = food_categories[::-1], prop={'size':10}, loc=2)
+ax2.xaxis.set_major_locator(months)
+ax2.xaxis.set_major_formatter(monthFmt)
+ax2.xaxis.set_minor_locator(days)
+fig.autofmt_xdate()
+ax2.set_ylabel("average daily food spending [$]")
+
+
 
 date_1 = datetime(day=10, month=3, year=2017)
 date_1_index = rolling_dates.index(date_1)
@@ -316,60 +328,65 @@ plt.show()
 ```
 
 
-![png](dollars_to_doughnuts_files/dollars_to_doughnuts_28_0.png)
+![png]({{ site.baseurl }}/img/posts/food_spending/dollars_to_doughnuts_files/dollars_to_doughnuts_29_0.png)
 
 
-
-```python
-
-```
-
-
-
-
-    62
-
-
+Because I'm also interested in how my choice of average has affected the presentation, I'd like to see how the data changes if I tighten up my window.
 
 
 ```python
-march_1_index = rolling_dates.index(datetime(day=1, month=3, year=2017))
+def calculate_rolling_window_total(time_frame):
 
-food_categories = ['Alcohol & Bars',
-'Coffee Shops',
-'Fast Food',
-'Groceries',
-'Restaurants',
-'Lunch at Work',
-'Snacks']
+    # index will be the date that we'll use to loop through our data
+    # it starts n days from the beginning, which the first day that we
+    # have enough data to average
+    start = dates[0]
+    end = dates[-1]
+    index = start + timedelta(days = time_frame-1)
 
+    rolling = []
+    rolling_dates = []
 
-accu
+    while index <= end:
+
+        # on each loop, filter out any transactions that don't fall in our window
+        rolled_transactions = filter(lambda trans: start <= trans.date <= index, transactions)
+
+        # add that average to our result list
+        rolling.append(sum([trans.amount for trans in rolled_transactions])/time_frame)
+
+        # we're also keeping track of the dates for plotting later
+        rolling_dates.append(index)
+
+        #move both of our indices
+        index = index + timedelta(days = 1)
+        start = start + timedelta(days = 1)
+        
+    return [rolling_dates, rolling]
 ```
-
-
-
-
-    [10.339432975582287,
-     11.620631334125562,
-     18.172996975085404,
-     39.383748054888741,
-     74.168809374291698,
-     100.0,
-     100.0]
-
-
 
 
 ```python
-len(rolling_dates)
+data = [calculate_rolling_window_total(t) for t in range(5, 61, 2)]
+
+cm_subsection = np.linspace(0, 1, len(data)) 
+colors = [ cm.viridis(x) for x in cm_subsection ]
+
+fig, ax = plt.subplots(1)
+for i, window in enumerate(data):
+    ax.plot(window[0],window[1], color = colors[i], lw=8, label=(5*i)+5)
+ax.xaxis.set_major_locator(months)
+ax.xaxis.set_major_formatter(monthFmt)
+ax.xaxis.set_minor_locator(days)
+fig.autofmt_xdate()
+plt.ylabel("average daily food spending [$]")
+ax.set_xlim([data[-1][0][0],data[0][0][-1]])
+ax.set_ylim([0,40])
+plt.show()
 ```
 
 
-
-
-    158
-
+![png]({{ site.baseurl }}/img/posts/food_spending/dollars_to_doughnuts_files/dollars_to_doughnuts_32_0.png)
 
 
 
