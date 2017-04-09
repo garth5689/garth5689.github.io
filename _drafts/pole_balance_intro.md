@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "Inverted Pendulum Dynamics"
+title:      "Balancing Act"
 date:       2017-04-04 12:00:00
 author:     Andrew
 header-img: img/posts/sympy_dynamics/balance_rock.jpg

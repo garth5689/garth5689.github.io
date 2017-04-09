@@ -9,21 +9,23 @@ header-credit: https://unsplash.com/@mobography
 tags:       programming dynamics sympy python
 ---
 
-This is a quick post to share something that I was planning on doing otherwise, but thought others might find it interesting at best and slightly amusing at worst.  today.
+This is a quick post to do some visualization on some of my financial data.  I was interested in determining if some concious changes I had been making to my food spending habits had actually materialized into real savings.
 
 Everyone's always looking to find a place to save a few dimes, and over the past few months I've really started to take notice of my food spending.  After examining the last few months worth of budgets (I use mint to track my expenses and categorize them), I decided to make a concerted effort to eat out less, cook more and bring my lunch to work to reduce spending.
 
-The big question is, did it work?  I'm not performing a rigorous statistical analysis here, but thought I'd at least take a look and see if I can see anything.
+I started this effort roughly around mid February, but I'll look at the data starting at last October to give some historical trends.
 
 Fine print:
 * I was on vacation in the beginning of January, using cash only, so those transactions won't appear
-* I've been conciously reducing spending for the past 3-4 works
 * I didn't remove anomolies, like covering a meal for a group and getting paid in cash
 * Some restaurants show up in Alcohol & Bars
 
+I used my programming language of choice, [python](https://www.python.org/), with the [matplotlib](http://matplotlib.org/), [numpy](http://www.numpy.org/), and [scipy](https://www.scipy.org/) libraries.
 
-I'm going to be using my programming language of choice, python for this task.
+This post will be interleaving the code and my rationale, so if you're not particularly interested in the code, you can skip over those sections.  I've done my best to make it a coherent article even without the code.
 <!--break-->
+This first code block is just setting everything up and importing all the necessary libraries.
+
 
 ```python
 import csv
@@ -32,11 +34,11 @@ from matplotlib import pyplot as plt
 from matplotlib import cm
 import matplotlib.dates as mdates
 import matplotlib as mpl
-from collections import namedtuple
 from datetime import datetime, timedelta, date
 from itertools import groupby, dropwhile, accumulate
 from decimal import Decimal, getcontext
 from pprint import pprint
+from scipy import stats
 
 %matplotlib inline
 
@@ -47,9 +49,11 @@ mpl.rcParams['figure.figsize'] = (12.0, 10.0)
 mpl.rcParams['font.size'] = 15
 ```
 
-First, I downloaded all my transactions from mint in a .csv file.  I opened the csv and removed everything except the 3 columns for date, amount and category (I could have done some of that in python, but it was just easier to do it ahead of time)
+I use [mint](https://www.mint.com/) to track and categorize my finances.  It pulls transaction information from my bank accounts, and each month I run through the transactions from the previous month to make sure they were correctly categorized.
 
-Then I open the file and read in all of the rows.  This will bring the rows in as lists, so the data is already separated by column.
+To start, I downloaded all my transactions from mint as a .csv (comma separated values) file. In excel, I removed everything except the columns for date, amount and category. I could have done some of that in python, but it was just easier to do it ahead of time.
+
+Then in python, we can read in the file.  Python's `csv` module makes it easy to already separate the data.  The result is a list of all the rows.  Each row is already split up into the columns.
 
 
 ```python
@@ -67,27 +71,59 @@ pprint(transactions[:preview_size])
      ['4/05/2017', '10.25', 'Movies & DVDs']]
 
 
-The first step is to make the data a bit more usable, starting with removing the column header text. `[1:]`  means to take everything except the first item in `transactions` (python indexing starts at `0`)
+The first step to make the data usable is to remove the column header text. `[1:]` takes everything except the first item in `transactions` (python indexing starts at `0`)
 
 
 ```python
 transactions = transactions[1:]
 ```
 
-Right now, all the data is being stored as strings, which makes it difficult to do any kind of sorting or math.  A `tuple` is a sequence of items, so I'm creating a tuple that has three named attributes, `date`, `amount`, and `category`.  This means we can access the data by name instead of index.
+Right now, all the data is being stored as strings, which makes it difficult to do any kind of sorting or math.
 
-`datetime.strptime` turns a string into an actual date object in python, and I'll be storing the amount as a `Decimal`.  Category remains a string
+To resolve this, let's make a new class (`Transaction`) to store this information.  This way, data types can also be assigned to the individual pieces of information their own data types.
 
-As an aside, here's a fun example of what can happen if you store currencies as floating point numbers: https://hackerone.com/reports/176461
+The attributes of `Transaction` will be:
+* `date`. `datetime.strptime` turns a string into an actual date object in python, so we can filter and sort by date.
+* `amount` will be stored as `Decimal` (don't use floating point for currencies![^floating_bitcoin])
+* `category` will remain a string.
+
+Additionally, I'll add a `__str__` method to make things look nice when they get printed out.
 
 
 ```python
-T = namedtuple('T','date, amount, category')
-
-transactions = [T(datetime.strptime(date,"%m/%d/%Y"),
-                  Decimal(amount),
-                  category) for date,amount,category in transactions]
+class Transaction(object):
+    
+    def __init__(self, date, amount, category):
+        self.date = datetime.strptime(date,"%m/%d/%Y")
+        self.amount = Decimal(amount)
+        self.category = category
+    
+    def __str__(self):
+        return "${0:>6.2f} on {1:>8} ({2})".format(
+            self.amount,
+            self.date.strftime("%m/%d/%y"),
+            self.category)
+    
+    def __repr__(self):
+        return self.__str__()
 ```
+
+
+```python
+transactions = [Transaction(date, amount, category) for date, amount, category in transactions]
+```
+
+
+```python
+pprint(transactions[:preview_size])
+```
+
+    [$  1.34 on 04/06/17 (Lunch at Work),
+     $  2.55 on 04/06/17 (Lunch at Work),
+     $  7.22 on 04/05/17 (Restaurants),
+     $ 10.25 on 04/05/17 (Movies & DVDs),
+     $  1.18 on 04/06/17 (Lunch at Work)]
+
 
 Our transaction list still contains every transaction from 2017 though, so we'll need to filter out the non-food related one.  Here is the list of the food categories that I track in mint.
 
@@ -115,7 +151,8 @@ Next, let's trim our date range down to something recent.  I'll go from last Oct
 
 
 ```python
-transactions = list(filter(lambda trans: trans.date >= datetime(day=1, month=10, year=2016), transactions))
+cutoff_date = datetime(day=1, month=10, year=2016)
+transactions = [trans for trans in transactions if trans.date >= cutoff_date]
 ```
 
 Now our data looks something like this:
@@ -125,24 +162,23 @@ Now our data looks something like this:
 pprint(transactions[:preview_size])
 ```
 
-    [T(date=datetime.datetime(2016, 10, 1, 0, 0), amount=Decimal('35.16'), category='Alcohol & Bars'),
-     T(date=datetime.datetime(2016, 10, 1, 0, 0), amount=Decimal('9.92'), category='Alcohol & Bars'),
-     T(date=datetime.datetime(2016, 10, 1, 0, 0), amount=Decimal('2.12'), category='Fast Food'),
-     T(date=datetime.datetime(2016, 10, 1, 0, 0), amount=Decimal('16.7'), category='Groceries'),
-     T(date=datetime.datetime(2016, 10, 1, 0, 0), amount=Decimal('6.2'), category='Lunch at Work')]
+    [$ 35.16 on 10/01/16 (Alcohol & Bars),
+     $  9.92 on 10/01/16 (Alcohol & Bars),
+     $  2.12 on 10/01/16 (Fast Food),
+     $ 16.70 on 10/01/16 (Groceries),
+     $  6.20 on 10/01/16 (Lunch at Work)]
 
 
-First, let's look at a simple bar graph of spending.  First, let's group the transactions so we can sum all the transactions that happened on the same day. `groupby` does this by traversing the list and grouping items by date as it finds them.  This is why it's important that our data was sorted, otherwise the groupings could be messed up.
+`transactions` is now a list of all transactions, sorted by date.  The first thing we should look at is a simple bar graph of daily spending.  I anticipate that it won't be particularly information (might be very noisy), but it might spot if we've done something wrong to this point.
+
+In order to do this, we first need to group the transactions by date.  Python has a function `groupby`, which does exactly this, but requires that the data be sorted (which we've already done).
+
+Once the transactions are grouped by date, they're summed up and the dates and amounts are added to lists for plotting later.
 
 
 ```python
 grouped_transactions = groupby(transactions, key = lambda trans: trans.date)
-```
 
-Now a list of dates is made, and for each of those dates, all the transactions are summed up.
-
-
-```python
 dates = []
 daily_sums = []
 
@@ -151,7 +187,7 @@ for date, transaction_group in grouped_transactions:
     daily_sums.append(sum([trans.amount for trans in transaction_group]))
 ```
 
-All that's left to do now is plot the data (most of this code is just to make it look nice)
+(This code is just to make pretty pictures)
 
 
 ```python
@@ -173,49 +209,62 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}/img/posts/food_spending/dollars_to_doughnuts_files/dollars_to_doughnuts_23_0.png)
+![png]({{ site.baseurl }}/img/posts/food_spending/dollars_to_doughnuts_files/dollars_to_doughnuts_24_0.png)
 
 
 The data looks plausible, but it's not particularly revealing.  With this fine of detail, it's hard to see any clear trends.  Let's try a [moving average](https://en.wikipedia.org/wiki/Moving_average) to see if that reveals any trends.
 
-In this case, I'll be using a moving average to average my spending over the last `n` days.  So what that means for these plots is the numbers represent my average spending for the previous `n` days.
+In this case, I'll be using a moving average to average my spending over the last `30` days.
 
-For the overall spending, let's see what a 15 day moving average looks like.
+First, I'm going to de
+
+
+```python
+def calculate_rolling_window_sums(dates, daily_sums, time_frame):
+
+    # index will be the date that we'll use to loop through our data
+    # it starts n days from the beginning, which the first day that we
+    # have enough data to average.  index is the end of our window
+    # on each calculation
+    start = dates[0]
+    end = dates[-1]
+    
+    index = start + timedelta(days = time_frame-1)
+
+    rolling = []
+    rolling_dates = []
+    
+    # stop once we're within time_frame days of the end of the data
+    while index <= end:
+
+        # on each loop, filter out any transactions that don't fall in our window
+        window = [trans for trans in transactions
+                  if index - timedelta(days = time_frame) <= trans.date <= index]
+
+        # sum all transactions that fall in the window
+        # then average them
+        # then add that average to our result
+        rolling.append(sum([trans.amount for trans in window])/time_frame)
+
+        # we're also keeping track of the dates for plotting later
+        rolling_dates.append(index)
+
+        #move the index date
+        index = index + timedelta(days = 1)
+        
+    # return the date and sums lists
+    return [rolling_dates, rolling]
+```
 
 
 ```python
 time_frame = 30
 
-# index will be the date that we'll use to loop through our data
-# it starts n days from the beginning, which the first day that we
-# have enough data to average
-start = dates[0]
-end = dates[-1]
-index = start + timedelta(days = time_frame-1)
+rolling_dates,rolling = calculate_rolling_window_sums(dates, daily_sums, time_frame)
 
-rolling = []
-rolling_dates = []
-
-while index <= end:
-    
-    # on each loop, filter out any transactions that don't fall in our window
-    rolled_transactions = filter(lambda trans: start <= trans.date <= index, transactions)
-    
-    # add that average to our result list
-    rolling.append(sum([trans.amount for trans in rolled_transactions])/time_frame)
-    
-    # we're also keeping track of the dates for plotting later
-    rolling_dates.append(index)
-    
-    #move both of our indices
-    index = index + timedelta(days = 1)
-    start = start + timedelta(days = 1)    
-```
-
-
-```python
 fig, ax = plt.subplots(1)
-ax.plot(rolling_dates,rolling,'k')
+ax.plot(rolling_dates,rolling,'k', alpha=0.3)
+ax.plot(rolling_dates,rolling,'k.', markersize=7)
 ax.xaxis.set_major_locator(months)
 ax.xaxis.set_major_formatter(monthFmt)
 ax.xaxis.set_minor_locator(days)
@@ -223,42 +272,107 @@ fig.autofmt_xdate()
 plt.ylabel("average daily food spending [$]")
 ax.set_xlim([rolling_dates[0],rolling_dates[-1]])
 ax.set_ylim(0)
+ax.set_title("{} day rolling average of daily food spending vs. date".format(time_frame))
+
 plt.show()
 ```
 
 
-![png]({{ site.baseurl }}/img/posts/food_spending/dollars_to_doughnuts_files/dollars_to_doughnuts_26_0.png)
+![png]({{ site.baseurl }}/img/posts/food_spending/dollars_to_doughnuts_files/dollars_to_doughnuts_27_0.png)
 
 
-Nothing absolutely definitive, but it does look like my effort to re-reign in my spending on food is having an effect.  From this, it's clear how Jan. and Feb. had relatively high spending compared to late last year.
+Nothing definitive at this point.  It's clear that my spending went up through February and March.  I do remember clearly being surprised at how much I was spending on food in February when I looked (which is what prompted my changes).
 
-However, I'm also interested in whether my intentions to get take-out and eat lunch at work less have panned out as well.  To see about this, let's take a look at a stacked bar chart.  This will show the breakdown of spending by category.  Again, with a 30 day moving average.
+It also does appear that there is a decline in spending starting around March.  Let's look at the trend in 30 day moving average starting March 1st.
 
 
 ```python
 time_frame = 30
 
-start = dates[0]
-end = dates[-1]
-index = start + timedelta(days = time_frame-1)
+rolling_dates,rolling = calculate_rolling_window_sums(dates, daily_sums, time_frame)
 
-rolling = []
-rolling_dates = []
+linear_reg_start = datetime(day=1, month=3, year=2017)
+linear_reg_end = rolling_dates[-1]
 
-while index <= end:
+linear_reg_start_index = rolling_dates.index(linear_reg_start)
+
+date_nums = [mdates.date2num(dt) for dt in rolling_dates[linear_reg_start_index:]]
+float_nums = [float(num) for num in rolling[linear_reg_start_index:]]
+
+m,b = np.polyfit(date_nums,float_nums,1)
+
+lin_reg_y = [mdates.date2num(linear_reg_start)*m+b, mdates.date2num(linear_reg_end)*m+b]
+
+fig, ax = plt.subplots(1)
+ax.plot(rolling_dates,rolling,'k', alpha=0.3)
+ax.plot(rolling_dates,rolling,'k.', markersize=7)
+ax.xaxis.set_major_locator(months)
+ax.xaxis.set_major_formatter(monthFmt)
+ax.xaxis.set_minor_locator(days)
+fig.autofmt_xdate()
+plt.ylabel("average daily food spending [$]")
+ax.set_xlim([linear_reg_start- timedelta(days=35),linear_reg_end])
+ax.set_ylim(0)
+ax.set_title("{} day rolling average of daily food spending vs. date".format(time_frame))
+ax.plot([linear_reg_start, linear_reg_end],lin_reg_y, 'r--',
+        label="linear regession {} to {}".format(linear_reg_start.strftime("%m/%d/%y"),
+                                                 linear_reg_end.strftime("%m/%d/%y")))
+ax.legend(loc=3)
+plt.show()
+```
+
+
+![png]({{ site.baseurl }}/img/posts/food_spending/dollars_to_doughnuts_files/dollars_to_doughnuts_29_0.png)
+
+
+There looks to be a nice downward trend there!  So at first glance, it appears that my spending is going down.  However, I'm also interested in whether my spending is moving within the overall food category.  Specifically, I'm looking for my spending to transition from low-value (Restaurants, Lunch at Work) to more economic categories (Groceries).
+
+Back to the overall time period, let's examine a stacked chart, showing how my spending is changing per category as well.
+
+
+```python
+def calculate_rolling_window_stacked(dates, daily_sums, time_frame):
+
+    # index will be the date that we'll use to loop through our data
+    # it starts n days from the beginning, which the first day that we
+    # have enough data to average.  index is the end of our window
+    # on each calculation
+    start = dates[0]
+    end = dates[-1]
     
-    rolled_transactions = filter(lambda trans: start <= trans.date <= index, transactions)
-    rolled_transactions = sorted(list(rolled_transactions), key = lambda trans: trans.category)
+    index = start + timedelta(days = time_frame-1)
+
+    rolling = []
+    rolling_dates = []
     
-    stack = {}
-    for cat,cat_trans in groupby(rolled_transactions, lambda trans: trans.category):
-        stack[cat] = sum([trans.amount for trans in cat_trans])/time_frame
+    # stop once we're within time_frame days of the end of the data
+    while index <= end:
+
+        # on each loop, filter out any transactions that don't fall in our window
+        window = [trans for trans in transactions
+                  if index - timedelta(days = time_frame) <= trans.date <= index]
+
+        # re-sort each window of transactions by category
+        window = sorted(list(window), key = lambda trans: trans.category)
+    
+        # place those averages into a dictionary
+        # then we can extract them in the same order each time
+        stack = {}
+        for cat,cat_trans in groupby(window, lambda trans: trans.category):
+            stack[cat] = sum([trans.amount for trans in cat_trans])/time_frame
         
-    rolling.append([float(stack[cat]) if cat in stack else float(0) for cat in food_categories])
-    rolling_dates.append(index)
-    
-    index = index + timedelta(days = 1)
-    start = start + timedelta(days = 1)    
+        # make a list of all the stacked numbers
+        # substitute 0 for non-existent categories
+        rolling.append([float(stack[cat]) if cat in stack else float(0) for cat in food_categories])
+
+        # we're also keeping track of the dates for plotting later
+        rolling_dates.append(index)
+
+        #move the index date
+        index = index + timedelta(days = 1)
+        
+    # return the date and sums lists
+    return [rolling_dates, rolling]
 ```
 
 
@@ -283,6 +397,8 @@ def add_braces(ax, text, x0, y0, x1, y1, y2):
                 arrowprops=dict(arrowstyle="->",
                                 connectionstyle="arc, armB=-30"))
 
+rolling_dates,rolling = calculate_rolling_window_stacked(dates, daily_sums, 30)
+    
 y = np.row_stack(list(zip(*rolling)))  
 percent = y /  y.sum(axis=0).astype(float) * 100 
 
@@ -303,7 +419,6 @@ ax2.xaxis.set_major_formatter(monthFmt)
 ax2.xaxis.set_minor_locator(days)
 fig.autofmt_xdate()
 ax2.set_ylabel("average daily food spending [$]")
-
 
 
 date_1 = datetime(day=10, month=3, year=2017)
@@ -328,42 +443,10 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}/img/posts/food_spending/dollars_to_doughnuts_files/dollars_to_doughnuts_29_0.png)
+![png]({{ site.baseurl }}/img/posts/food_spending/dollars_to_doughnuts_files/dollars_to_doughnuts_32_0.png)
 
 
 Because I'm also interested in how my choice of average has affected the presentation, I'd like to see how the data changes if I tighten up my window.
-
-
-```python
-def calculate_rolling_window_total(time_frame):
-
-    # index will be the date that we'll use to loop through our data
-    # it starts n days from the beginning, which the first day that we
-    # have enough data to average
-    start = dates[0]
-    end = dates[-1]
-    index = start + timedelta(days = time_frame-1)
-
-    rolling = []
-    rolling_dates = []
-
-    while index <= end:
-
-        # on each loop, filter out any transactions that don't fall in our window
-        rolled_transactions = filter(lambda trans: start <= trans.date <= index, transactions)
-
-        # add that average to our result list
-        rolling.append(sum([trans.amount for trans in rolled_transactions])/time_frame)
-
-        # we're also keeping track of the dates for plotting later
-        rolling_dates.append(index)
-
-        #move both of our indices
-        index = index + timedelta(days = 1)
-        start = start + timedelta(days = 1)
-        
-    return [rolling_dates, rolling]
-```
 
 
 ```python
@@ -385,9 +468,7 @@ ax.set_ylim([0,40])
 plt.show()
 ```
 
-
-![png]({{ site.baseurl }}/img/posts/food_spending/dollars_to_doughnuts_files/dollars_to_doughnuts_32_0.png)
-
+[^floating_bitcoin]: As an aside, here's a fun example of what can happen if you store currencies as floating point numbers: https://hackerone.com/reports/176461
 
 
 ```python
