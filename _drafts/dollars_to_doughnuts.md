@@ -22,7 +22,7 @@ Fine print:
 
 I used my programming language of choice, [python](https://www.python.org/), with the [matplotlib](http://matplotlib.org/), [numpy](http://www.numpy.org/), and [scipy](https://www.scipy.org/) libraries.
 
-This post will be interleaving the code and my rationale, so if you're not particularly interested in the code, you can skip over those sections.  I've done my best to make it a coherent article even without the code.
+This post will be interleaving the code and my rationale, so if you're not particularly interested in the code, you can skip over those sections.  I've done my best to make it a coherent article even without the code.  The code to create the plots is very verbose, so it's definitely safe to skip that.
 <!--break-->
 This first code block is just setting everything up and importing all the necessary libraries.
 
@@ -216,8 +216,6 @@ The data looks plausible, but it's not particularly revealing.  With this fine o
 
 In this case, I'll be using a moving average to average my spending over the last `30` days.
 
-First, I'm going to de
-
 
 ```python
 def calculate_rolling_window_sums(dates, daily_sums, time_frame):
@@ -234,7 +232,7 @@ def calculate_rolling_window_sums(dates, daily_sums, time_frame):
     rolling = []
     rolling_dates = []
     
-    # stop once we're within time_frame days of the end of the data
+    # stop once the index has reached the last day, stop calculating.
     while index <= end:
 
         # on each loop, filter out any transactions that don't fall in our window
@@ -249,7 +247,7 @@ def calculate_rolling_window_sums(dates, daily_sums, time_frame):
         # we're also keeping track of the dates for plotting later
         rolling_dates.append(index)
 
-        #move the index date
+        # move the index date for the next iteration
         index = index + timedelta(days = 1)
         
     # return the date and sums lists
@@ -345,7 +343,7 @@ def calculate_rolling_window_stacked(dates, daily_sums, time_frame):
     rolling = []
     rolling_dates = []
     
-    # stop once we're within time_frame days of the end of the data
+    # stop once the index has reached the last day, stop calculating.
     while index <= end:
 
         # on each loop, filter out any transactions that don't fall in our window
@@ -357,45 +355,39 @@ def calculate_rolling_window_stacked(dates, daily_sums, time_frame):
     
         # place those averages into a dictionary
         # then we can extract them in the same order each time
-        stack = {}
+        # initialize each category to 0
+        stack = {cat:0 for cat in food_categories}
         for cat,cat_trans in groupby(window, lambda trans: trans.category):
-            stack[cat] = sum([trans.amount for trans in cat_trans])/time_frame
+            stack[cat] = float(sum([trans.amount for trans in cat_trans])/time_frame)
         
         # make a list of all the stacked numbers
-        # substitute 0 for non-existent categories
-        rolling.append([float(stack[cat]) if cat in stack else float(0) for cat in food_categories])
+        rolling.append([stack[cat] for cat in food_categories])
 
         # we're also keeping track of the dates for plotting later
         rolling_dates.append(index)
 
-        #move the index date
+        # move the index date for the next iteration
         index = index + timedelta(days = 1)
         
     # return the date and sums lists
     return [rolling_dates, rolling]
+
 ```
 
 
 ```python
 def add_braces(ax, text, x0, y0, x1, y1, y2):
-    ax.annotate(text,
-                xy=(x1,y2),
-                xytext=(x0,y0),
-                xycoords='data',
-                ha='right',
-                va='center',
-                bbox=dict(boxstyle='square', fc='white'),
-                arrowprops=dict(arrowstyle="->",
-                                connectionstyle="arc, armB=-30"))
-    ax.annotate(text, 
-                xy=(x1,y1),
-                xytext=(x0,y0),
-                xycoords='data',
-                ha='right',
-                va='center',
-                bbox=dict(boxstyle='square', fc='white'),
-                arrowprops=dict(arrowstyle="->",
-                                connectionstyle="arc, armB=-30"))
+    arrowprops = dict(arrowstyle="->",
+                      connectionstyle="arc, armB=-30")
+
+    kwargs =dict(xycoords='data',
+                 ha='right',
+                 va='center',
+                 bbox=dict(boxstyle='square', fc='white'),
+                 arrowprops=arrowprops)
+    
+    ax.annotate(text, xy=(x1,y2), xytext=(x0,y0), **kwargs)
+    ax.annotate(text, xy=(x1,y1), xytext=(x0,y0), **kwargs)
 
 rolling_dates,rolling = calculate_rolling_window_stacked(dates, daily_sums, 30)
     
@@ -421,7 +413,7 @@ fig.autofmt_xdate()
 ax2.set_ylabel("average daily food spending [$]")
 
 
-date_1 = datetime(day=10, month=3, year=2017)
+date_1 = datetime(day=1, month=3, year=2017)
 date_1_index = rolling_dates.index(date_1)
 
 accu = list(accumulate([percent[i][date_1_index] for i in range(7)]))
@@ -446,14 +438,24 @@ plt.show()
 ![png]({{ site.baseurl }}/img/posts/food_spending/dollars_to_doughnuts_files/dollars_to_doughnuts_32_0.png)
 
 
+From these charts (specifically the stacked 100%), I see a gradual shift in spending away from restaurants / work cafeteria towards groceries.  I won't try to quantify the rate of how fast things are shifting, but I'm glad to see there is some trend.
+
 Because I'm also interested in how my choice of average has affected the presentation, I'd like to see how the data changes if I tighten up my window.
 
 
 ```python
-data = [calculate_rolling_window_total(t) for t in range(5, 61, 2)]
+start = 5
+stop = 61
+step= 5
+time_frames = list(range(start, stop, step))
 
-cm_subsection = np.linspace(0, 1, len(data)) 
-colors = [ cm.viridis(x) for x in cm_subsection ]
+data = [calculate_rolling_window_sums(dates, daily_sums, t) for t in time_frames]
+
+cmap = mpl.cm.viridis
+norm = mpl.colors.Normalize(vmin=min(time_frames), vmax=max(time_frames))
+
+cm_subsection = np.linspace(0, 1, len(time_frames)) 
+colors = [cmap(x) for x in cm_subsection ]
 
 fig, ax = plt.subplots(1)
 for i, window in enumerate(data):
@@ -465,8 +467,20 @@ fig.autofmt_xdate()
 plt.ylabel("average daily food spending [$]")
 ax.set_xlim([data[-1][0][0],data[0][0][-1]])
 ax.set_ylim([0,40])
+
+cax = fig.add_axes([0.5, 0.25, 0.35, 0.03])
+cb1 = mpl.colorbar.ColorbarBase(cax, 
+                                cmap=cmap,
+                                norm=norm,
+                                orientation='horizontal',
+                                ticks = [time_frames[0], time_frames[-1]])
+
 plt.show()
 ```
+
+
+![png]({{ site.baseurl }}/img/posts/food_spending/dollars_to_doughnuts_files/dollars_to_doughnuts_34_0.png)
+
 
 [^floating_bitcoin]: As an aside, here's a fun example of what can happen if you store currencies as floating point numbers: https://hackerone.com/reports/176461
 
