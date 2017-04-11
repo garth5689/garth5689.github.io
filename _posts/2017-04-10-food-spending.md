@@ -2,7 +2,7 @@
 layout:     post
 title:      "Dollars to Doughnuts"
 subtitle:   "Where do my food dollars go?"
-date:       2017-04-06 12:00:00
+date:       2017-04-10 21:00:00
 author:     Andrew
 header-img: img/posts/food_spending/peppers_bg.jpg
 header-credit: https://unsplash.com/@mobography
