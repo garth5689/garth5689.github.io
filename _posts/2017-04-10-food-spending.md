@@ -14,7 +14,7 @@ Today's post is a (relatively) quick one to do some visualization on my financia
 To date, I haven't really focused too much on reducing my food spending.  I keep a budget for it, but pretty regularly exceed it.  However, in February I took a close look at how much I was actually spending and tried to take some steps to reduce my spending.  The main areas that I looked to cut were eating take-out and getting breakfast & lunch at work every day.  I've been making some concious efforts in those areas over the past ~4 weeks or so, including cooking large batch meals to bring for lunches at work.
 
 In the post I'm going to run through the analysis I did to determine whether my changes had a financial impact.
-
+<!--break-->
 Fine print:
 * I was on vacation in the beginning of January, using cash only, so those transactions won't appear.
 * I didn't remove anomolies, like covering a meal for a group and getting paid in cash.
@@ -25,7 +25,7 @@ I use [mint](https://www.mint.com/) to track and categorize my finances.  It pul
 For the analysis, I used my programming language of choice, [python](https://www.python.org/), with the [matplotlib](http://matplotlib.org/), [numpy](http://www.numpy.org/), and [scipy](https://www.scipy.org/) libraries.
 
 This post will be interleaving the code and my commentary, so if you're not interested in the code, you can skip over those sections.  I've done my best to make it a coherent article even without the code.  The code to create the plots is very verbose, so it's definitely safe to skip that.
-<!--break-->
+
 
 ```python
 import csv
@@ -230,7 +230,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}/img/posts/food_spending/dollars_to_doughnuts_files/dollars_to_doughnuts_22_0.png)
+![png]({{ site.baseurl }}/img/posts/food_spending/2017-04-10-food-spending_files/2017-04-10-food-spending_23_0.png)
 
 
 As expected, the data looks reasonable, but not particularly useful to identifying long-term trends.  The large variation in daily spending makes it difficult to identify anything from the bar chart.
@@ -306,7 +306,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}/img/posts/food_spending/dollars_to_doughnuts_files/dollars_to_doughnuts_25_0.png)
+![png]({{ site.baseurl }}/img/posts/food_spending/2017-04-10-food-spending_files/2017-04-10-food-spending_26_0.png)
 
 
 Nothing definitive at this point except that my spending went up pretty solidly through January and February.
@@ -378,7 +378,7 @@ plot_moving_average_with_regression(
 ```
 
 
-![png]({{ site.baseurl }}/img/posts/food_spending/dollars_to_doughnuts_files/dollars_to_doughnuts_29_0.png)
+![png]({{ site.baseurl }}/img/posts/food_spending/2017-04-10-food-spending_files/2017-04-10-food-spending_30_0.png)
 
 
 There looks to be a nice downward trend there!  How about if we look at an even shorter window, maybe only a 7 day moving average, to account for the relatively short amount of time that I've been making this effort?
@@ -395,7 +395,7 @@ plot_moving_average_with_regression(
 ```
 
 
-![png]({{ site.baseurl }}/img/posts/food_spending/dollars_to_doughnuts_files/dollars_to_doughnuts_31_0.png)
+![png]({{ site.baseurl }}/img/posts/food_spending/2017-04-10-food-spending_files/2017-04-10-food-spending_32_0.png)
 
 
 Looks like the effect is larger with the shorter time moving_averages average, but the correlation is much less strong.  In any case, it does appear that there's been some spending reduction over the last month or so.  I'll call it a tentative success.
@@ -523,7 +523,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}/img/posts/food_spending/dollars_to_doughnuts_files/dollars_to_doughnuts_36_0.png)
+![png]({{ site.baseurl }}/img/posts/food_spending/2017-04-10-food-spending_files/2017-04-10-food-spending_37_0.png)
 
 
 # Summary
