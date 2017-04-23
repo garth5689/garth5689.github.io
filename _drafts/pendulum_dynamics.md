@@ -38,18 +38,20 @@ What that means for us is that those two angles are what we want to simulate giv
 
 This is where we take a slight leap into some mechanics that may be a bit advanced, but try to stick it out!
 
-There are two types of energy that we can have in our double pendulum system:
-* **[kinetic](https://en.wikipedia.org/wiki/Kinetic_energy)** ($$K$$), which comes from motion.  In this case, the swinging action of links.    
-* **[potential](https://en.wikipedia.org/wiki/Potential_energy)** ($$U$$), which is the stored energy of the system.  In this case, the links' height has some stored energy due to gravity.
+There are two types of energy present in our double pendulum system:
+* **[kinetic](https://en.wikipedia.org/wiki/Kinetic_energy)** ($$K$$), which comes from motion.  In this case, that motion is the swinging action of links.    
+* **[potential](https://en.wikipedia.org/wiki/Potential_energy)** ($$U$$), which is the stored energy of the system.  In this case, the stored energy is contained in the link's height, from gravity.  Gravitational potential energy is why things roll downhill (basically).
 
-We're going to use a function called the [Lagrangian](https://en.wikipedia.org/wiki/Lagrangian_mechanics) to work some magic using just the potential and kinetic energy of the system.  The Lagrangian 
+We're going to use a function called the [Lagrangian](https://en.wikipedia.org/wiki/Lagrangian_mechanics) to work some magic.
+
+Using just the potential and kinetic energy of the system, and describing the coordinates of the links, the Lagrangain can yield the equations of motion for the system.
 
 
 > Any function which generates the correct equations of motion, in agreement with physical laws, can be taken as a Lagrangian. It is nevertheless possible to construct general expressions for large classes of applications.
 
 ## System State Equations
 
-
+First, we'll take the $$x$$,$$y$$ coordinates for the centers of mass for the two links and put them in terms of our two degrees of freedom and the constants.
 
 $$ \begin{align}
 x_0=& r_{0} \cos{\left (\theta_0 \right )} & \\
@@ -60,6 +62,14 @@ y_1=& l_{0} \sin{\left (\theta_0 \right )} + r_{1} \sin{\left (\theta_0 + \theta
 $$
 
 ## Kinetic Energy
+
+Kinetic energy for a moving object (non-rotational) is $$\frac{1}{2}mv^2$$, where $$v$$ is the velocity, and the kinetic energy for a rotating object $$\frac{1}{2}I\omega^2$$, where $$I$$ is the moment of inertia (a measure of how much torque it takes to rotate) and $$\omega$$ is the rotational speed of the object.
+
+Using those equations, the total kinetic energy of the system is:
+
+$$K = \tfrac{1}{2}I_0\omega_0^2 + \tfrac{1}{2}m_0v_0^2 + \tfrac{1}{2}I_1\omega_1^2 + \tfrac{1}{2}m_1v_1^2$$
+
+To get our kinetic energy in terms of $$\theta_0$$ and $$\theta_1$$, some substitutions need to happen.
 
 $$
 \begin{align}
