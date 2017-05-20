@@ -38,13 +38,6 @@ def main(notebook, website_markdown_location, website_image_path):
 
         markdown_file = notebook_name + ".md"
 
-        if path.exists(website_markdown_location):
-            shutil.copy(path.join(notebook_path, markdown_file),
-                        website_markdown_location)
-        else:
-            print("website location for markdown file does not exist")
-            return 1
-
         # regenerate any tex files (for images)
         for file_name in listdir(notebook_path):
             if tex_re.match(file_name):
@@ -62,7 +55,7 @@ def main(notebook, website_markdown_location, website_image_path):
                 subprocess.run(convert_pdf_args, stdout=subprocess.PIPE)
 
 
-        with open(path.join(website_markdown_location, markdown_file), 'r') as md_file:
+        with open(path.join(notebook_path, markdown_file), 'r') as md_file:
             md_contents = md_file.read()
 
             # create the url to place in front of image files to redirect them
@@ -82,10 +75,6 @@ def main(notebook, website_markdown_location, website_image_path):
                                  r"![\1]({}\2)".format(image_url_substitution),
                                  md_contents)
 
-        # write new md contents with updated image paths
-        with open(path.join(website_markdown_location, markdown_file), 'w') as md_file:
-            md_file.write(md_contents)
-
         # move any images in the folder to the website images folder
         for file_name in listdir(notebook_path):
             if image_re.match(file_name):
@@ -102,6 +91,19 @@ def main(notebook, website_markdown_location, website_image_path):
             #that's ok that means there's no files to find.
             pass
 
+        # write new md contents with updated image paths
+        # should be last to trigger refresh
+        with open(path.join(notebook_path, markdown_file), 'w') as md_file:
+            md_file.write(md_contents)
+
+        # markdown file is modified in the notebook directory
+        # then copied over to prevent premature rendering in jekyll
+        if path.exists(website_markdown_location):
+            shutil.copy(path.join(notebook_path, markdown_file),
+                        website_markdown_location)
+        else:
+            print("website location for markdown file does not exist")
+            return 1
 
     else:
         print("markdown generation not successful")

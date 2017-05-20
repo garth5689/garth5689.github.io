@@ -48,7 +48,7 @@ As an example, let's preted tomorrow's weather depends only on today's weather, 
   * 50% likely rainy.
 
 This can be visualized like this:
-![weather_markov](https://upload.wikimedia.org/wikipedia/commons/7/7a/Markov_Chain_weather_model_matrix_as_a_graph.png)
+![weather_markov]({{ site.baseurl }}/img/posts/speeding_commuters/Markov_Chain_weather_model_matrix_as_a_graph.png)
 
 This can be represented mathematically as a [transition matrix](https://en.wikipedia.org/wiki/Stochastic_matrix).  In this matrix, the row represents the current state, and each column represents the next state.  The number at the each intersection is the probability of transitioning from that row's state to that columns's state.  Here is the above model as a matrix:
 
@@ -83,11 +83,20 @@ OIur last observation was important because it means we can use an even more spe
 
 This leads to an important part of this solution, how do we get this matrix for our problem?
 
+If we take a random initial state: `[1, 1, 2, 0]`, let's calculate the probability of Driver A receiving another ticket on the next trip (`[2, 1, 2, 0]`).  We know that at the start of the trip, a driver is randomly selected from those with fewer than three tickets.  In this case, all drivers are eligable, so Driver A has a 25% chance of being selected.  If Driver A is selected, there is a 10% chance that they receive a ticket.  .25 * .10 = .025.  The probability of transitioning from `[1, 1, 2, 0]` -> `[2, 1, 2, 0]` is 0.025.
+
+So we can create a function that calculates these probabilities for any two states.  Transitions are only possible between two states where exactly 1 ticket has been issued to exactly 1 driver, or no tickets have been issued.  Any other transitions has 0 probability.
+
+The probability that no ticket has been issued can be found by adding all the probabilities that tickets have been issued, and subtracting that from 1.
+
 
 ```python
 import numpy as np
 import itertools
 from collections import Counter
+from sympy import init_printing, Matrix
+from sympy.physics.vector import vlatex
+init_printing(latex_printer=vlatex, latex_mode='equation')
 ```
 
 
@@ -110,6 +119,44 @@ def transition_probability(initial, final, ticket_probs, ticket_limit=3):
         return 0    
 ```
 
+## Smaller example
+
+Let's run through an example that might help tie everything together.  Instead of our original problem parameters, assume there are only Drivers A and B, and that licenses are suspended after 2 tickets instead of 3.  This will greatly reduce the number of possible states.
+
+
+```python
+max_tickets = 2
+ticket_probs = np.array([0.10, 0.15])
+num_drivers = len(ticket_probs)
+```
+
+
+```python
+ticket_states = list(itertools.product(range(0, max_tickets+1), repeat=num_drivers))
+num_ticket_states = len(ticket_states)
+```
+
+Here are all the possible ways that tickets could be distributed across our two drivers:
+
+![states]({{ site.baseurl }}/img/posts/speeding_commuters/states.png)
+
+
+```python
+probability_matrix = np.zeros((num_ticket_states,num_ticket_states))
+
+for row, start_state in enumerate(ticket_states):
+    for col, end_state in enumerate(ticket_states):
+        probability_matrix[row][col] = transition_probability(start_state,
+                                                              end_state,
+                                                              ticket_probs,
+                                                              max_tickets)
+        
+for row,col in zip(*np.diag_indices_from(probability_matrix)):
+    probability_matrix[row][col] = 1 - np.sum(probability_matrix[row])
+```
+
+![prob_mat]({{ site.baseurl }}/img/posts/speeding_commuters/prob_matrix.png)
+
 
 ```python
 max_tickets = 3
@@ -126,20 +173,14 @@ num_ticket_states = len(ticket_states)
 
 ```python
 probability_matrix = np.zeros((num_ticket_states,num_ticket_states))
-```
 
-
-```python
 for row, start_state in enumerate(ticket_states):
     for col, end_state in enumerate(ticket_states):
         probability_matrix[row][col] = transition_probability(start_state,
                                                               end_state,
                                                               ticket_probs,
                                                               max_tickets)
-```
-
-
-```python
+        
 for row,col in zip(*np.diag_indices_from(probability_matrix)):
     probability_matrix[row][col] = 1 - np.sum(probability_matrix[row])
 ```
@@ -158,10 +199,15 @@ expected_days_to_all_suspended
 
 
 
-    38.499999999999957
+$$38.5$$
 
 
 
-http://www4.stat.ncsu.edu/~jaosborn/research/RISK.pdf
-http://www.datagenetics.com/blog/november12011/
+http://www4.stat.ncsu.edu/~jaosborn/research/RISK.pdf    
+http://www.datagenetics.com/blog/november12011/    
 http://www.math.uiuc.edu/~bishop/monopoly.pdf
+
+
+```python
+
+```
