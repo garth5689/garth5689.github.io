@@ -2,7 +2,7 @@
 layout: page
 title: about
 nav-title: about
-description: "this is who I am"
+description: "learn a little bit about me"
 header-img: "img/about/about-bg.jpg"
 header-credit: "https://unsplash.com/@fineas_anton"
 ---
