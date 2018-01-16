@@ -15,7 +15,7 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-left">
                 {% for page in site.pages %}
-                    {% if page.url == '/' or page.url == '/about/' %}
+                    {% if page.url == '/' or page.url == '/about/' or page.url == '/cv/' %}
                     <li>
                         <a href="{{ page.url | prepend: site.baseurl }}">{{ page.nav-title }}</a>
                     </li>
