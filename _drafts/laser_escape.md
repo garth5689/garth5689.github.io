@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      ""
+title:      "Laser Escape: Concept"
 date:       2018-07-01 16:00:00
 author:     Andrew
 header-img: img/posts/laser_escape/hao-wang-217034-unsplash.jpg
@@ -26,23 +26,27 @@ One complication however is that the photoresistors are constantly varying by sm
 The genius of turning this 
 
 
+
+
 ## Concept & Layout
 
 I think most people's first experience with some kind of laser maze is in the movies.  Everyone can likely recall a bank robbery scene where someone must make their way through a grid of beams (probably moving) to access the treasure at the end.  Like most people, this was the extent of my involvement with that type of room, until I had the opportunity to actually go through one!  I was on a bachelor party at one of those arcade / go-karts / bowling type places in Wisconsin, and it had a very intriguing looking arcade game.  Peeking in, I was interested to see a bunch of laser beams criss-crossing the room, so someone put in a token and gave it a shot.  The goal was to progress through the room, pressing buttons along the walls as you went.  Breaking beams gave you a time penalty, and the entire process was timed, giving you a good way to compete against your friends.
 
 While this room was the inspiration for my project, I wouldn't say that it was an immediate hit in my brain.  The idea to do this myself sat patiently and waited until the time was right.  Turns out, the right time was shortly after I received a raspberry pi a few years ago for Christmas.  Even then, I ended up buying supplies, but shelving the project due to lack of motivation.  I returned to it after a few friends had asked for help on projects of their own, and seeing others get things rolling on really neat projects gave me a kick start to finally finish it up.
 
-My initial concept was remarkably close to both the commercial room that inspired me, and the initial concept in my head.  In my initial concepting, I wanted to have the following items:
+My initial concept was remarkably close to both the commercial room that inspired me, and the initial concept in my head.  Initially, I wanted to have the following items:
 * stationary lasers from one wall to the other
 * a timer
 * a button to start/stop the timer
 * time penalties for broken lasers
 
-The following items were off the table for various reasons:
+And the following items were off-limits:
 * moving lasers (too many moving parts to do reliably)
 * multiple buttons along walls (not enough room)
 
 In addition, I tend to believe in getting a minimum working product out there, so when you advance to more difficult aspects, you have the knowledge of the basic setup as well.
 
-So let's get down to business.
+So let's get down to business and I'll explain what I had in mind when I started.  My number one goal was fun (obviously), and I thought that being able to compete for time would be an important part of that goal.  The location for the room was a portion of my basement approx. 10 ft. x 20 ft.  For this size room, I took a rough guess that I would need ~10 lasers.  The plan was to have them aimed at different angles and heights to create a puzzle-like experience where participants might need to think about where they would go next instead of making it an entirely dexterity-based game.
+
+
 
