@@ -1,12 +1,47 @@
 ---
 layout:     post
-title:      "Laser Escape: Concept"
+title:      "Laser Escape⏱️"
 date:       2018-07-01 16:00:00
 author:     Andrew
 header-img: img/posts/laser_escape/hao-wang-217034-unsplash.jpg
 header-credit: https://unsplash.com/@danranwanghao
 tags:       programming electronics raspberry_pi
 ---
+
+Hey everyone, I'm back after a long break to share my latest project!
+
+For the past few months, I've been working to construct a **laser escape maze** in my basement.  Yep, you read that correctly, and I'm super excited to finally have it finished!  I'm going to share a little bit about how I built the room and what I learned along the way.
+
+## Background
+
+
+This one may take a little while to explain, so I'll start from the beginning.  Think back to your favorite heist movie.  If it's a recent one, it's possible there's a scene where the thieves are gracefully moving through the laser beams of a security system to get to the riches.  <!--break--> If you can't think of one off the top of your [head](https://www.youtube.com/watch?v=aEawL9PYh-k), [here](https://www.youtube.com/watch?v=w0Wwrb4c4uE) [are](https://www.youtube.com/watch?v=1g9QEQrHOMw) [some](https://www.youtube.com/watch?v=mr834Cs9ncs) [examples](https://www.youtube.com/watch?v=KX2_LCUkhDs).  This is a popular enough trope that  it has an entry on [tv tropes](https://tvtropes.org/pmwiki/pmwiki.php/Main/LaserHallway) and the [Mythbusters](https://www.youtube.com/watch?v=ZAv7z4Rg0W8) looked into it.
+
+Regardless of the real life applications, a laser maze like that certainly looks fun.  The idea of potentially constructing only started when I was able to actually go through one in an arcade (back in 2016!).  The arcade version consisted of a large room, with lasers crossing it, and buttons along the walls.  The goal was to press the buttons in order, while not breaking the laser beams.  The entire run was timed so that we could compete!  All I can say is that it's seriously a ton more fun than it looks.  I hadn't experienced something like that before, and it *seemed* like something that could be done relatively easily.  So I filed it away in the back of my head, but didn't come back to it for some time.
+
+## Concepting
+
+The idea came back in earnest a few months later, when I got a raspberry pi for Christmas.  When I started, I knew I wanted to keep the basic core of the arcade room, but keep it simple to get the project started.  I started with the following list of ideas:
+* stationary lasers from one wall to the other
+* a timer
+* a button to start/stop the timer
+* time penalties for broken lasers
+
+And the following items were off-limits:
+* moving lasers (too many moving parts to do reliably)
+* multiple buttons along walls (not enough room, too complicated)
+
+
+## Hardware
+To gather a hardware list, I started to research similar projects.  Thankfully, there is a pretty common beginner project for making a laser trip-wire, so I was able to use materials from that.  I bought 10 lasers, some light sensors, and some buzzers.  The great part about this project as a first project for my pi is that it doesn't require a lot of expensive components.  
+
+## Software
+
+
+## Layout
+
+
+
 
 Hey everyone, I'm back to share my latest project!
 
@@ -23,7 +58,7 @@ The first step was to get all the components I needed.  Reading a few basic tuto
 My favorite thing I learned during the project was how the light dependent resistors work, and specifically how they work with the raspberry pi.  Light dependent resistors are resistors that change their resistance depending on the amount of light shone onto the sensors.
 
 One complication however is that the photoresistors are constantly varying by small amounts, thus the voltages are constantly varying.  This is a problem when working on a raspberry pi, as it doesn't have any analog inputs, only digital input/output.  Functionally, this means any input is either on or off.  This leaves us with the problem of how to turn an analog scale ,the intensity of the light on the sensor, to a value in our code that we can use.  The answer, already determined and open-sourced by someone smarter than me is to use a specific electrical circuit and pulse an output.
-The genius of turning this 
+The genius of turning this
 
 
 
@@ -47,6 +82,3 @@ And the following items were off-limits:
 In addition, I tend to believe in getting a minimum working product out there, so when you advance to more difficult aspects, you have the knowledge of the basic setup as well.
 
 So let's get down to business and I'll explain what I had in mind when I started.  My number one goal was fun (obviously), and I thought that being able to compete for time would be an important part of that goal.  The location for the room was a portion of my basement approx. 10 ft. x 20 ft.  For this size room, I took a rough guess that I would need ~10 lasers.  The plan was to have them aimed at different angles and heights to create a puzzle-like experience where participants might need to think about where they would go next instead of making it an entirely dexterity-based game.
-
-
-
