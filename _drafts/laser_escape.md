@@ -35,11 +35,21 @@ And the following items were off-limits:
 ## Hardware
 To gather a hardware list, I started to research similar projects.  Thankfully, there is a pretty common beginner project for making a laser trip-wire, so I was able to use materials from that.  I bought 10 lasers, some light sensors, and some buzzers.  The great part about this project as a first project for my pi is that it doesn't require a lot of expensive components.  
 
+The non-essentials included a nice big arcade button for maximum visibility and an LCD screen.  A laptop monitor would work just as well, but I liked having the timing device self-contained as well, and not needing a monitor in the area.  Additionally, I needed some wire, and I borrowed a soldering iron from a friend as well.
+
+For a more in-depth look at the hardware, including how the photoresistors work (and why an asrduino might be better than a raspberry pi for this project), take a look at the more detailed hardware post!
+
 ## Software
 
 
 ## Layout
+So far, the actual layout of the lasers has gone through 2 revisions.  TO actually affix the photoresistors to the walls, I just used tape, and ran the wires down to the floor, then along the base of the wall.  This holds them in place, but also allows for me to easily adjust them as the lasers might shift slightly over time.
 
+The wall with the lasers is well-suited for this because there's no wall, it's just studs with no drywall.  This allows me to use some stiff wire to hold the lasers in place, and nail that wire directly into the stud.  This allows me to have good control over the direction of the laser, and if I do need to actually move it, it's easy enough to take the nails out and move those as well.
+
+My "process" for setting up the course was to start with a few simple ones, and gradually add in more lasers interacting as you move through the course.  For the first revision however, I made the unfortunate oversight that I left too much room under the lasers, so that anyone could crawl through the whole thing.  Besides being totally unsecure, I thought that might not be in the spirit of the project, so I readjusted them.
+
+I'm excited to see what people think about the difficulty level of the course.  I tried to make it not too tough, but there's a real possibility that people will make it through extremely quick.
 
 
 
