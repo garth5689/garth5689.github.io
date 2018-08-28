@@ -14,25 +14,29 @@ header-credit: "https://unsplash.com/@impatrickt"
 ## Work
 **Deere & Company - John Deere Power Systems**    
 *Senior Engine Controls Engineer*    
-* Overhauled application build tools & process [**C#**]
+* Overhauled application build batch files into single application **`C#`**
 * Supported rollout of [Mercurial](https://www.mercurial-scm.org/) in department
-    * Wrote support tools & commit hooks [**Python**]
+    * Wrote support tools & commit hooks **`Python`**
     * Lead user's group to set best practices
-    * Submitted multiple upstream patches [**Python**]
-* Designed & implemented embedded control functionality [**C**]
-* Introduced CI by creating build-on-push branches [**Jenkins**, **Python**]
-* Resolved numerous embedded application code bugs [**C**]
+    * Submitted multiple upstream patches **`Python`**
+* Designed & implemented embedded control functionality **`C`**
+* Introduced CI by creating build-on-push branches **`Jenkins`**, **`Python`**
+* Resolved numerous embedded application code bugs **`C`**
 
-## Skills
-Proficient: C, C#, Python, Mercurial    
-Exposure: Jenkins, Linux, MATLAB
+## Skills    
+Proficient: `C`, `C#`, `Python`, `Mercurial`    
+Exposure: `Jenkins`, `Linux`, `Git`, `C++`, `Latex`, `MATLAB`
 
-## Community
-#### Mercurial
-* [issue 3153](https://bz.mercurial-scm.org/show_bug.cgi?id=3153) ([commit](https://www.mercurial-scm.org/repo/hg/rev/0945539a3a6b))    
-`hg diff -r <rev1> -r <rev2> -S` falls over if a subrepo has been removed.
-* [issue 5479](https://bz.mercurial-scm.org/show_bug.cgi?id=5479) ([commit](https://www.mercurial-scm.org/repo/hg/rev/0e29ce16ec38))    
-`hg diff --stat` gets confused by lines that start with `-- ` or `++ `.
+## Open Source Contributions
+#### Mercurial (Version Control Software) `Python`
+* [#3153](https://bz.mercurial-scm.org/show_bug.cgi?id=3153) ([commit](https://www.mercurial-scm.org/repo/hg/rev/0945539a3a6b))    
+Fixed Mercurial to correctly handle revision differences when subrepositories were deleted.
+* [#5479](https://bz.mercurial-scm.org/show_bug.cgi?id=5479) ([commit](https://www.mercurial-scm.org/repo/hg/rev/0e29ce16ec38))    
+Fixed diff routine to properly count lines starting in `-- ` or `++ `.
+
+#### Cockatrice (A Cross-Platform Virtual Tabletop) `C++`
+* [#2479](https://github.com/Cockatrice/Cockatrice/issues/2479) ([PR](https://github.com/Cockatrice/Cockatrice/pull/3367))    
+Updated picture downloading code to correctly fallback to new URLs on 404 errors.
 
 #### [reddit.com/r/dailyprogrammer](https://www.reddit.com/r/dailyprogrammer/)
 > dailyprogrammer is about challenging programmers of all skill level with weekly programming challenges. 3 challenges a week are posted at increasing difficulty. Solutions are peer reviewed and redditors can ask for the community for feedback and comments.
