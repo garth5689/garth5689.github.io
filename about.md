@@ -3,7 +3,7 @@ layout: page
 title: about
 nav-title: about
 description: "learn a little bit about me"
-header-img: "img/about/about-bg.jpg"
+header-img: "img/about/glenn-carstens-peters-IMRuLuNnFw4-unsplash.jpg"
 header-credit: "https://unsplash.com/@glenncarstenspeters"
 ---
 
