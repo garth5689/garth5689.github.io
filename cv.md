@@ -38,11 +38,5 @@ Fixed diff routine to properly count lines starting in `-- ` or `++ `.
 * [#2479](https://github.com/Cockatrice/Cockatrice/issues/2479) ([PR](https://github.com/Cockatrice/Cockatrice/pull/3367))    
 Updated picture downloading code to correctly fallback to new URLs on 404 errors.
 
-#### [reddit.com/r/dailyprogrammer](https://www.reddit.com/r/dailyprogrammer/)
-> dailyprogrammer is about challenging programmers of all skill level with weekly programming challenges. 3 challenges a week are posted at increasing difficulty. Solutions are peer reviewed and redditors can ask for the community for feedback and comments.
-
-Since late 2017, I have been submitting 1-2 problems per month.  The problems range in difficulty and are usually created from scratch.
-
-
 ## Resume
 Here is my [full resume]({{ site.url }}assets/resume.pdf)
