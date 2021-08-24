@@ -4,7 +4,7 @@ title: about
 nav-title: about
 description: "learn a little bit about me"
 header-img: "img/about/about-bg.jpg"
-header-credit: "https://unsplash.com/@fineas_anton"
+header-credit: "https://unsplash.com/@glenncarstenspeters"
 ---
 
 <img class="rounded" alt="" vspace="10" hspace="10" style="float:right"  src="{{ site.baseurl }}/img/about/headshot.resized.jpg"/>
